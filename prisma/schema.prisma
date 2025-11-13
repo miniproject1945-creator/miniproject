@@ -1,0 +1,61 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Wallet{
+  id String @id @default(uuid())
+  balance Int @default(0)
+  userId String @unique
+
+  user User @relation(fields: [userId], references: [id])
+
+}
+
+model User {
+  id        String    @id @default(uuid())
+  firstname String
+  lastname  String
+  email     String    @unique
+  password  String
+  wallet    Wallet?
+  referral  Referral? 
+  referrals Referral[] @relation("ReferralsByUser") 
+  role      Role      @default(USER)
+
+  @@map("users")
+}
+
+model Referral {
+  id            String   @id @default(uuid())
+  referralCode  String   @unique
+  createdAt     DateTime @default(now())
+  
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+
+  referredById  String?
+  referredBy    User?    @relation("ReferralsByUser", fields: [referredById], references: [id])
+}
+
+
+
+model RegisToken{
+  id Int @id @default(autoincrement())
+  token String @unique
+}
+
+enum Role{
+  USER
+  ADMIN
+}
+
+
+
+
