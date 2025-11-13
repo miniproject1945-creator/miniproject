@@ -1,0 +1,19 @@
+
+# Connect to Supabase via connection pooling
+DATABASE_URL="postgresql://postgres.uprnosjdqhvijmxeltcy:123456789miniproject@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true&schema=event_management"
+
+# Direct connection to the database. Used for migrations
+DIRECT_URL="postgresql://postgres.uprnosjdqhvijmxeltcy:123456789miniproject@aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres?schema=event_management"
+
+PORT = 8000
+SECRET_KEY = "miniproject"
+
+CLOUDINARY_API_KEY = "869816173594834"
+CLOUDINARY_API_SECRET = "-6giDPWgYTg_SITj6mebwSEAHMA"
+CLOUDINARY_API_NAME = "dutrh2fi5"
+
+GMAIL_EMAIL = "miniproject1945@gmail.com"
+GMAIL_APP_PASS = "tkhj dprl hxeh ktjg"
+
+BASE_WEB_URL = "http:/localhost:3000"
+
