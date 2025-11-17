@@ -33,15 +33,20 @@ export async function verifyController(
     const authHeader = req.headers.authorization as string;
     const token = authHeader.split(" ")[1];
 
-    const {email} = req.user as Token;
+    const { email } = req.user as Token;
     const { firstname, lastname, password, referral } = req.body;
-    await verifyService(token,referral, {
-      email,
-      firstname,
-      lastname,
-      password,
+
+    await verifyService(
       referral,
-    });
+      token,
+      {
+        email,
+        firstname,
+        lastname,
+        password,
+        referral,
+      }
+    );
 
     res.json({
       message: "Your account has been verified",
@@ -50,6 +55,7 @@ export async function verifyController(
     next(err);
   }
 }
+
 
 export async function loginController(
     req: Request, 

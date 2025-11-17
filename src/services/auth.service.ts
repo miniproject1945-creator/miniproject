@@ -5,13 +5,21 @@ import fs from "fs";
 import { compile } from "handlebars";
 import { sign } from "jsonwebtoken";
 import { compareSync, genSaltSync, hashSync } from "bcrypt";
-import { generateReferralCode } from "./generateReferral.service";
+
 
 import { getRegisterToken } from "./registerToken.service";
 import { BASE_WEB_URL, SECRET_KEY } from "../configs/env.configs";
 import { createCustomError } from "../utils/customError";
 import { transporter } from "../helpers/nodemailer";
-import { Param } from "@prisma/client/runtime/library";
+import { generateReferralCode } from "@/utils/generateReferralCode";
+
+interface RegisterDTO {
+  email: string;
+  firstname: string;
+  lastname: string;
+  password: string;
+  referral?: string;
+}
 
 
 export async function getUserByEmail(email: string) {
@@ -27,11 +35,12 @@ export async function getUserByEmail(email: string) {
   }
 }
 
-export async function getUserByReferral(referral: string){
+
+export async function getUserByReferral(referral: string) {
   try {
     const user = await prisma.referral.findUnique({
-      where:{
-        referral,
+      where: {
+        referralCode: referral,
       },
     });
     return user;
@@ -40,6 +49,7 @@ export async function getUserByReferral(referral: string){
     throw err;
   }
 }
+
 
 export async function verificationLinkService(email: string) {
   const targetPath = path.join(__dirname, "../templates", "registration.hbs");
@@ -77,40 +87,59 @@ export async function verificationLinkService(email: string) {
   }
 }
 
+
 export async function verifyService(
   referral: string,
   token: string,
-  params: Prisma.UserCreateInput
+  params: RegisterDTO
 ) {
   try {
+    
     const tokenExist = await getRegisterToken(token);
     if (!tokenExist) throw createCustomError(403, "Invalid Token");
 
+    
     const referralExist = await getUserByReferral(referral);
-    if(!referralExist) throw createCustomError(401,"Invalid Referral")
+    if (!referralExist) throw createCustomError(401, "Invalid Referral");
 
-    const user = await getUserByEmail(params.email);
-    if (user) throw createCustomError(401, "User already exists");
 
+    const existedUser = await getUserByEmail(params.email);
+    if (existedUser) throw createCustomError(401, "User already exists");
+
+    
     const salt = genSaltSync(10);
     const hashedPassword = hashSync(params.password, salt);
-    
-    const NewReferral = await generateReferralCode()
 
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      await tx.user.create({
+
+    await prisma.$transaction(async (tx) => {
+      
+      const newUser = await tx.user.create({
         data: {
-          ...params,
+          firstname: params.firstname,
+          lastname: params.lastname,
+          email: params.email,
           password: hashedPassword,
+          referredById: referralExist.userId,
         },
       });
 
-      await tx.regisToken.delete({
-        where: {
-          token,
+      
+      const referralCode = await generateReferralCode();
+
+      await tx.referral.create({
+        data: {
+          userId: newUser.id,
+          referralCode: referralCode,
         },
+      });
+
+      
+      await tx.regisToken.delete({
+        where: { token },
       });
     });
+
+    return { message: "Registration & referral creation success" };
   } catch (err) {
     throw err;
   }
@@ -130,7 +159,7 @@ export async function Login( email: string, password: string){
             email: user.email,
             firstName : user.firstname,
             lastName : user.lastname,
-            role : user.role,
+            role : user,
         }
 
         const accessToken = sign(payload, SECRET_KEY, {expiresIn: "10m"});

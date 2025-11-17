@@ -8,6 +8,7 @@ import {
 import { authMiddleware } from "@/middlewares/auth.middleware";
 
 
+
 const authRouter = Router();
 
 authRouter.post("/verification-link", verificationLinkController);
