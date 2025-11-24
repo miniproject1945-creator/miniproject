@@ -1,177 +1,145 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import prisma from "../lib/prisma";
-import path from "path";
-import fs from "fs";
-import { compile } from "handlebars";
-import { sign } from "jsonwebtoken";
-import { compareSync, genSaltSync, hashSync } from "bcrypt";
+import prisma from '@/prismaClient';
+import { UserRepository } from '@/repositories/user.repository';
+import { Decoded, LoginRequest, RegisterRequest } from '@/types/auth.type';
+import { ErrorResponse } from '@/utils/error';
+import { comparePassword, hashPassword } from '@/utils/hash';
+import { generateJWTToken } from '@/utils/jwt';
+import {
+  generateReferralCode,
+  generateVoucherCode,
+} from '@/utils/randomGenerator';
+import { responseWithData, responseWithoutData } from '@/utils/response';
+import { AuthValidaton } from '@/validations/auth.validation';
+import { Validation } from '@/validations/validation';
 
+export class AuthService {
+  static async register(request: RegisterRequest) {
+    const { email, isAdmin, password, username, referralCode } =
+      Validation.validate(AuthValidaton.REGISTER, request);
 
-import { getRegisterToken } from "./registerToken.service";
-import { BASE_WEB_URL, SECRET_KEY } from "../configs/env.configs";
-import { createCustomError } from "../utils/customError";
-import { transporter } from "../helpers/nodemailer";
-import { generateReferralCode } from "@/utils/generateReferralCode";
-
-interface RegisterDTO {
-  email: string;
-  firstname: string;
-  lastname: string;
-  password: string;
-  referral?: string;
-}
-
-
-export async function getUserByEmail(email: string) {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-    return user;
-  } catch (err) {
-    throw err;
-  }
-}
-
-
-export async function getUserByReferral(referral: string) {
-  try {
-    const user = await prisma.referral.findUnique({
-      where: {
-        referralCode: referral,
-      },
-    });
-    return user;
-    
-  } catch (err) {
-    throw err;
-  }
-}
-
-
-export async function verificationLinkService(email: string) {
-  const targetPath = path.join(__dirname, "../templates", "registration.hbs");
-  try {
-    const user = await getUserByEmail(email);
-    if (user) throw createCustomError(401, "User already exists");
-    const payload = {
-      email,
-    };
-
-    const token = sign(payload, SECRET_KEY, { expiresIn: "5m" });
-
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      await tx.regisToken.create({
-        data: {
-          token,
-        },
-      });
-
-      const templateSrc = fs.readFileSync(targetPath, "utf-8");
-      const compiledTemplate = compile(templateSrc);
-
-      const html = compiledTemplate({
-        redirect_url: `${BASE_WEB_URL}/auth/verify?token=${token}`,
-      });
-
-      await transporter.sendMail({
-        to: email,
-        subject: "Registration",
-        html,
-      });
-    });
-  } catch (err) {
-    throw err;
-  }
-}
-
-
-export async function verifyService(
-  referral: string,
-  token: string,
-  params: RegisterDTO
-) {
-  try {
-    
-    const tokenExist = await getRegisterToken(token);
-    if (!tokenExist) throw createCustomError(403, "Invalid Token");
-
-    
-    const referralExist = await getUserByReferral(referral);
-    if (!referralExist) throw createCustomError(401, "Invalid Referral");
-
-
-    const existedUser = await getUserByEmail(params.email);
-    if (existedUser) throw createCustomError(401, "User already exists");
-
-    
-    const salt = genSaltSync(10);
-    const hashedPassword = hashSync(params.password, salt);
-
-
-    await prisma.$transaction(async (tx) => {
-      
-      const newUser = await tx.user.create({
-        data: {
-          firstname: params.firstname,
-          lastname: params.lastname,
-          email: params.email,
-          password: hashedPassword,
-          referredById: referralExist.userId,
-        },
-      });
-
-      
-      const referralCode = await generateReferralCode();
-
-      await tx.referral.create({
-        data: {
-          userId: newUser.id,
-          referralCode: referralCode,
-        },
-      });
-
-      
-      await tx.regisToken.delete({
-        where: { token },
-      });
-    });
-
-    return { message: "Registration & referral creation success" };
-  } catch (err) {
-    throw err;
-  }
-}
-
-
-export async function Login( email: string, password: string){
-    try {
-        const user = await getUserByEmail(email);
-        if(!user) 
-            throw createCustomError(401, "invalid email or password");
-        const isValidPassword = compareSync(password, user.password);
-        if(!isValidPassword)
-            throw createCustomError (401, "invalid email or password");
-
-        const payload = {
-            email: user.email,
-            firstName : user.firstname,
-            lastName : user.lastname,
-            role : user,
-        }
-
-        const accessToken = sign(payload, SECRET_KEY, {expiresIn: "10m"});
-        const refreshToken = sign(payload, SECRET_KEY, {expiresIn: "30d"});
-        
-        return {
-            accessToken,
-            refreshToken,
-        }
-
-    } catch (err) {
-        throw err;
+    const userByUsername = await UserRepository.findUserByUnique({ username });
+    if (userByUsername) {
+      throw new ErrorResponse(400, 'Username already exists!');
     }
-};
 
+    const userByEmail = await UserRepository.findUserByUnique({ email });
+    if (userByEmail) throw new ErrorResponse(400, 'Email already exists!');
+
+    if (!isAdmin && referralCode) {
+      const userByReferralCode = await UserRepository.findUserByUnique({
+        referralCode,
+      });
+
+      if (!userByReferralCode) {
+        throw new ErrorResponse(400, 'Invalid referral code!');
+      } else {
+        await prisma.$transaction(async (tx) => {
+          const currentDate = new Date();
+          currentDate.setMonth(currentDate.getMonth() + 3);
+
+          if (!userByReferralCode.point) {
+            await tx.point.create({
+              data: {
+                balance: 10000,
+                expiryDate: currentDate,
+                user: { connect: { id: userByReferralCode.id } },
+              },
+            });
+          } else {
+            await tx.point.update({
+              data: {
+                balance: userByReferralCode.point.balance + 10000,
+                expiryDate: currentDate,
+              },
+              where: { id: userByReferralCode.point.id },
+            });
+          }
+
+          const newUser = await tx.user.create({
+            data: {
+              email,
+              isAdmin,
+              username,
+              password: await hashPassword(password),
+              referralCode: isAdmin
+                ? undefined
+                : generateReferralCode(username.slice(0, 3)),
+            },
+          });
+
+          await tx.voucher.create({
+            data: {
+              discount: 10,
+              expiryDate: currentDate,
+              maxUsage: 1,
+              name: generateVoucherCode(userByReferralCode.referralCode!),
+
+              user: { connect: { id: newUser.id } },
+            },
+          });
+        });
+
+        return responseWithoutData(201, true, 'Registration was successful');
+      }
+    }
+
+    await UserRepository.createUser({
+      email,
+      isAdmin,
+      username,
+      password: await hashPassword(password),
+      referralCode: isAdmin
+        ? undefined
+        : generateReferralCode(username.slice(0, 3)),
+    });
+
+    return responseWithoutData(201, true, 'Registration was successful');
+  }
+
+  static async login(request: LoginRequest) {
+    const { identity, password } = Validation.validate(
+      AuthValidaton.LOGIN,
+      request,
+    );
+
+    let findUser = null;
+    const userByUsername = await UserRepository.findUserByUnique({
+      username: identity,
+    });
+    if (!userByUsername) {
+      const userByEmail = await UserRepository.findUserByUnique({
+        email: identity,
+      });
+      findUser = userByEmail;
+    }
+
+    const user = userByUsername ? userByUsername : findUser;
+    if (!user) throw new ErrorResponse(404, 'Username or Email not exists!');
+
+    const compare = await comparePassword(password, user.password);
+    if (!compare) throw new ErrorResponse(401, 'Password is wrong!');
+
+    const token = generateJWTToken({ id: user.id, isAdmin: user.isAdmin });
+    return responseWithData(200, true, 'Login was successful', {
+      username: user.username,
+      isAdmin: user.isAdmin,
+      token,
+    });
+  }
+
+  static async keepLogin(decoded: Decoded) {
+    const token = generateJWTToken({
+      id: decoded.id,
+      isAdmin: decoded.isAdmin,
+    });
+
+    const user = await UserRepository.findUserByUnique({ id: decoded.id });
+    if (!user) throw new ErrorResponse(404, 'User not found!');
+
+    return responseWithData(200, true, 'Keep login was successful', {
+      username: user.username,
+      isAdmin: user.isAdmin,
+      token,
+    });
+  }
+}

@@ -1,18 +1,24 @@
-import { Router } from "express";
+import { AuthController } from '@/controllers/auth.controller';
+import { verifyToken } from '@/middlewares/auth.middleware';
+import { Router } from 'express';
 
-import { 
-    verificationLinkController,
-    verifyController,
-    loginController
-} from "@/controllers/auth.controller";
-import { authMiddleware } from "@/middlewares/auth.middleware";
+export class AuthRouter {
+  private router: Router;
+  private authController: AuthController;
 
+  constructor() {
+    this.router = Router();
+    this.authController = new AuthController();
+    this.initializeRoutes();
+  }
 
+  private initializeRoutes(): void {
+    this.router.post('/register', this.authController.register);
+    this.router.post('/login', this.authController.login);
+    this.router.get('/keep-login', verifyToken, this.authController.keepLogin);
+  }
 
-const authRouter = Router();
-
-authRouter.post("/verification-link", verificationLinkController);
-authRouter.post("/verify", authMiddleware, verifyController);
-authRouter.post("/login",loginController);
-
-export default authRouter;
+  public getRoutes(): Router {
+    return this.router;
+  }
+}
