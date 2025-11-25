@@ -19,7 +19,7 @@ export type EventRequest = {
     endDate: Date;
     locationId: number;
     categoryId: number;
-    description: number;
+    description: string;
     maxCapacity: number;
     limitCheckout: number;
 };

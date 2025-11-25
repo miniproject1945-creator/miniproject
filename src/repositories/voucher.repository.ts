@@ -1,4 +1,4 @@
-import prisma from "@/prismaClient";
+import prisma from "@/prisma";
 import { CreateVoucher } from "@/types/voucher.type";
 
 export class VoucherRepository {
@@ -16,7 +16,7 @@ export class VoucherRepository {
 
     static async findVouchersById(id: number) {
         return await prisma.voucher.findUnique({
-            Where:{id},
+            where:{id},
         });
     }
 

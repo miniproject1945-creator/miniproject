@@ -19,7 +19,7 @@ export class VoucherController {
         try {
             const id = res.locals.decoded.id as number;
 
-            const eventId = req.params.eventId;
+            const eventId = Number(req.params.eventId);
             const response = await VoucherService.getVouchersById(id, eventId);
             return res.status(200).send(response);
         } catch (error) {
@@ -29,7 +29,7 @@ export class VoucherController {
 
     public async getVouchersByCreator(req: Request, res: Response, next: NextFunction) {
         try {
-            const eventId = req.params.eventId;
+            const eventId = Number(req.params.eventId);
 
             const response = await VoucherService.getVouchersByCreator(eventId);
             return res.status(200).send(response);

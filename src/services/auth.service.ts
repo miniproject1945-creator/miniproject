@@ -1,4 +1,4 @@
-import prisma from '@/prismaClient';
+import prisma from '@/prisma';
 import { UserRepository } from '@/repositories/user.repository';
 import { Decoded, LoginRequest, RegisterRequest } from '@/types/auth.type';
 import { ErrorResponse } from '@/utils/error';

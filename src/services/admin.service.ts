@@ -1,4 +1,4 @@
-import prisma from '@/prismaClient';
+import prisma from '@/prisma';
 import { EventRepository } from '@/repositories/event.repository';
 import { TransactionRepository } from '@/repositories/transaction.repository';
 import { UserRepository } from '@/repositories/user.repository';

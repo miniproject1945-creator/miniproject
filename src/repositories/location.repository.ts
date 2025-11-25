@@ -1,4 +1,4 @@
-import prisma from "@/prismaClient";
+import prisma from "@/prisma";
 import { LocationQuerry } from "@/types/location.type";
 
 

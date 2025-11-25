@@ -1,5 +1,5 @@
 import { EventQuery, EventRequest } from '@/types/event.type';
-import prisma from '@/prismaClient';
+import prisma from '@/prisma';
 import { AdminEventQueryValidated } from '@/types/admin.type';
 
 export class EventRepository {

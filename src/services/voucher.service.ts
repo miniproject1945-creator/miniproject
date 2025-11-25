@@ -1,4 +1,4 @@
-import prisma from "@/prismaClient";
+import prisma from "@/prisma";
 import { EventRepository } from "@/repositories/event.repository";
 import { VoucherRepository } from "@/repositories/voucher.repository";
 import { CreateVoucher } from "@/types/voucher.type";
@@ -14,7 +14,7 @@ export class VoucherService {
             body
         );
 
-        const event = await EventRepository.getEventById({eventId});
+        const event = await EventRepository.getEventById(eventId);
         console.log("data userId :", event);
 
         if(!event){

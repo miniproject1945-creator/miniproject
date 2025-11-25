@@ -1,4 +1,4 @@
-import prisma from '@/prismaClient';
+import prisma from '@/prisma';
 import { EventRepository } from '@/repositories/event.repository';
 import { ReviewRepository } from '@/repositories/review.repository';
 import { TransactionRepository } from '@/repositories/transaction.repository';
@@ -347,7 +347,7 @@ export class TransactionService {
       throw new ErrorResponse(401, 'Transaction is not yours');
     }
 
-    if (userTransactions.paymentStatus !== PaymentStatus.waiting) {
+    if (userTransactions.paymentStatus !== PaymentStatus.WAITING) {
       throw new ErrorResponse(
         401,
         'Transaction has been paid or the transaction status is complete',

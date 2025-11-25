@@ -63,7 +63,7 @@ model Event {
   id             Int           @id @default(autoincrement())
   name           String
   price          Int
-  description    String        //@db.Text
+  description    String        @db.Text
   imageURL       String
   availableSeats Int
   maxCapacity    Int
@@ -87,7 +87,7 @@ model Event {
 
 model Feedback {
   id        Int      @id @default(autoincrement())
-  message   String?  //@db.Text
+  message   String?  @db.Text
   rating    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

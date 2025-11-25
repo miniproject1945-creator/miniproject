@@ -1,4 +1,4 @@
-import prisma from '@/prismaClient';
+import prisma from '@/prisma';
 import { AdminEventTransactionQuery } from '@/types/admin.type';
 import {
   PaymentStatus,

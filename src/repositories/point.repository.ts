@@ -1,4 +1,4 @@
-import prisma from "@/prismaClient";
+import prisma from "@/prisma";
 import { CreatePoint } from "@/types/point.type";
 
 export class PointRepository {
@@ -8,7 +8,7 @@ export class PointRepository {
                 balance: data.balance,
                 expiryDate: data.expiryDate,
                 user: {
-                    connect: { id: userId },
+                    connect: { id: data.userId },
                 },
             },
         });
