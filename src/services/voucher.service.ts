@@ -63,7 +63,5 @@ export class VoucherService {
 
         return responseWithData(200, true, 'Get vouchers by creator successfully', response);
     }
-        
-
 }
 
