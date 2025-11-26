@@ -1,6 +1,5 @@
 import express, { json, urlencoded } from 'express';
 import cors from 'cors';
-import { PORT } from './configs';
 import { ErrorMiddleware } from './middlewares/error.middleware';
 import { AuthRouter } from './routers/auth.router';
 import { locationRouter } from './routers/location.router';
@@ -51,10 +50,5 @@ export default class App {
         this.app.use('/reviews', ReviewRouter.getRouter());
         this.app.use('/transactions', TransactionRouter.getRouter());
         this.app.use('/admin', adminRouter.getRoutes());
-    }
-    start() {
-        this.app.listen(PORT, () => {
-            console.log(` [API] Local:   http://localhost:${PORT}/`);
-        });
     }
 }
