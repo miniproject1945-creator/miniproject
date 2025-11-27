@@ -14,5 +14,7 @@
       "src": "/(.*)",
       "dest": "dist/main.js"
     }
-  ]
+  ],
+    "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  
 }
