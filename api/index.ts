@@ -1,3 +1,7 @@
-import App from "../src/main";
-const app = new App().app;
-export default app;
+
+import {VercelRequest, VercelResponse} from "@vercel/node"
+import app from "../src/index";
+
+export default function handler(req: VercelRequest, res: VercelResponse) {
+  app(req, res); 
+}
