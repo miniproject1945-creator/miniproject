@@ -14,6 +14,6 @@
     }
   },
   // "include": ["src/**/*"],
-  "include": ["src", "api"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules"]
 }

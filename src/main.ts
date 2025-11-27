@@ -61,4 +61,11 @@ export default class App {
     this.app.use('/admin', adminRouter.getRoutes());
   }
 
+  public start(): void{
+    this.app.listen(PORT,()=>{
+      console.log(`[API] local: http://localhost:${PORT}/`);
+      
+    })
+  }
+
 }

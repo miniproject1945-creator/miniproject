@@ -1,8 +1,8 @@
 import App from "./main";
 
-const expressApp = new App().app;
+const main = () => {
+    const app = new App();
+    app.start();
+}
 
-// Express membutuhkan handler function
-export default (req: any, res: any) => {
-  expressApp(req, res);
-};
+main();
