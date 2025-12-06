@@ -42,4 +42,6 @@ app.use("/admin", AdminRouter);
 // error middleware
 app.use(ErrorMiddleware);
 
-export default app;
+app.listen(PORT, () => {
+  console.log(`server started on port ${PORT}`);
+});

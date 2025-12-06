@@ -4,8 +4,9 @@
   "main": "./src/main.ts",
   "type": "module",
   "scripts": {
-    "dev": "nodemon",
-    "build": "tsc",
+    "dev": "cross-env NODE_ENV=development tsx src/main.ts",
+    "build": "tsc && cp -r public dist/",
+    "start": "node dist/main.js",
     "serve": "cross-env NODE_ENV=production node dist/main.js",
     "test": "jest",
     "test:coverage": "jest --coverage",
