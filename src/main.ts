@@ -21,7 +21,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// STATIC FILE HARUS DI ATAS
+
 app.use("/", express.static(join(__dirname, "../public")));
 
 // ROUTERS
@@ -42,6 +42,4 @@ app.use("/admin", AdminRouter);
 // error middleware
 app.use(ErrorMiddleware);
 
-app.listen(PORT, () => {
-  console.log(`server started on port ${PORT}`);
-});
+export default app;
