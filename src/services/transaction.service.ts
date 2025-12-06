@@ -1,18 +1,18 @@
-import prisma from '@/prisma';
-import { getEventByIdWithTransaction } from '@/repositories/event.repository';
-import { getEventWaiting, getEventSuccess, getEventSuccessByDate, getDataCheckout, postPaidCheckout} from '@/repositories/transaction.repository';
-import { findUserByIdIncludePoint, } from '@/repositories/user.repository';
-import { findVouchersById } from '@/repositories/voucher.repository';
+import prisma from '../prisma';
+import { getEventByIdWithTransaction } from '../repositories/event.repository';
+import { getEventWaiting, getEventSuccess, getEventSuccessByDate, getDataCheckout, postPaidCheckout} from '../repositories/transaction.repository';
+import { findUserByIdIncludePoint, } from '../repositories/user.repository';
+import { findVouchersById } from '../repositories/voucher.repository';
 import {
   TransactionCheckout,
   TransactionRequest,
-} from '@/types/transaction.type';
-import { createCustomError } from '@/utils/error';
-import { generateTicketCode } from '@/utils/randomGenerator';
-import { responseWithData, responseWithoutData } from '@/utils/response';
-import { TransactionValidation } from '@/validations/transaction.validation';
-import { Validation } from '@/validations/validation';
-import { PaymentStatus } from '@/types/transaction.type';
+} from '../types/transaction.type';
+import { createCustomError } from '../utils/error';
+import { generateTicketCode } from '../utils/randomGenerator';
+import { responseWithData, responseWithoutData } from '../utils/response';
+import { TransactionValidation } from '../validations/transaction.validation';
+import { Validation } from '../validations/validation';
+import { PaymentStatus } from '../types/transaction.type';
 
 
   export async function createTransactionService(id: number, request: TransactionRequest) {

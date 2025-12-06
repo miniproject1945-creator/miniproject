@@ -1,5 +1,5 @@
-import { getProfileController } from "@/controllers/user.controller";
-import { verifyToken } from "@/middlewares/auth.middleware";
+import { getProfileController } from "../controllers/user.controller";
+import { verifyToken } from "../middlewares/auth.middleware";
 import { Router } from "express";
 
 const userRouter = Router();

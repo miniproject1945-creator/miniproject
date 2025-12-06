@@ -9,16 +9,16 @@ import {
    updateEvent,
    createEvent,
    deleteEvent
-  } from '@/repositories/event.repository';
-import { EventQuery, EventRequest } from '@/types/event.type';
-import { createCustomError } from '@/utils/error';
+  } from '../repositories/event.repository';
+import { EventQuery, EventRequest } from '../types/event.type';
+import { createCustomError } from '../utils/error';
 import {
   responseDataWithPagination,
   responseWithData,
   responseWithoutData,
-} from '@/utils/response';
-import { EventValidation } from '@/validations/event_validation';
-import { Validation } from '@/validations/validation';
+} from '../utils/response';
+import { EventValidation } from '../validations/event_validation';
+import { Validation } from '../validations/validation';
 
 
   export async function getEventsService(query: EventQuery) {

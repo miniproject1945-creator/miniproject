@@ -1,5 +1,5 @@
-import { registerService, loginService, keepLoginService } from '@/services/auth.service';
-import { Decoded, LoginRequest, RegisterRequest } from '@/types/auth.type';
+import { registerService, loginService, keepLoginService } from '../services/auth.service';
+import { Decoded, LoginRequest, RegisterRequest } from '../types/auth.type';
 import { NextFunction, Request, Response } from 'express';
 
 

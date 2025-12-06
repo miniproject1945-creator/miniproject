@@ -1,6 +1,6 @@
-import { createEventController, deleteEventController, getEventByIdController, getEventsBySearchController, updateEventController } from '@/controllers/event.controller';
-import { adminGuard, verifyToken } from '@/middlewares/auth.middleware';
-import { uploader } from '@/middlewares/uplouder.middleware';
+import { createEventController, deleteEventController, getEventByIdController, getEventsBySearchController, updateEventController } from '../controllers/event.controller';
+import { adminGuard, verifyToken } from '../middlewares/auth.middleware';
+import { uploader } from '../middlewares/uplouder.middleware';
 import { Router } from 'express';
 
 const EventRouter = Router();

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { CreateFeedback } from "@/types/review.type";
-import { createReviewService } from "@/services/review.service";
+import { CreateFeedback } from "../types/review.type";
+import { createReviewService } from "../services/review.service";
 
 
     export async function createFeedbackController(req: Request, res: Response, next: NextFunction) {

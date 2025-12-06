@@ -1,4 +1,4 @@
-import { PaymentStatus } from '@/types/transaction.type';
+import { PaymentStatus } from '../types/transaction.type';
 import { z } from 'zod';
 
 const EventSortEnum = [

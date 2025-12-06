@@ -1,4 +1,4 @@
-import { getLocationsController } from "@/controllers/location.controller";
+import { getLocationsController } from "../controllers/location.controller";
 import { Router } from "express";
 
 const locationRouter = Router();

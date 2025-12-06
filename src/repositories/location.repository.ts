@@ -1,5 +1,5 @@
-import prisma from "@/prisma";
-import { LocationQuerry } from "@/types/location.type";
+import prisma from "../prisma";
+import { LocationQuerry } from "../types/location.type";
 
 
 

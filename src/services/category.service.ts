@@ -1,5 +1,5 @@
-import { getCategories } from "@/repositories/category.repository";
-import { responseWithData } from "@/utils/response";
+import { getCategories } from "../repositories/category.repository";
+import { responseWithData } from "../utils/response";
 
 
     export async function getCategoriesService() {

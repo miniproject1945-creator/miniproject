@@ -1,6 +1,6 @@
-import { ErrorResponse } from '@/utils/error';
+import { createCustomError } from '../utils/error';
 import { z } from 'zod';
-import { deletfile } from '@/utils/file';
+import { deletfile } from '../utils/file';
 
 const MIN_CATEGORY_ID = 1;
 const MAX_CATEGORY_ID = 6;
@@ -16,16 +16,16 @@ const ACCEPTED_IMAGE_TYPES = [
 
 export class EventValidation {
   static fileValidation(file: Express.Multer.File) {
-    if (!file) throw new ErrorResponse(400, 'Image is required!');
+    if (!file) throw createCustomError(400, 'Image is required!');
 
     if (file.size > MAX_FILE_SIZE) {
       deletfile('../../public/assets/events', file.filename);
-      throw new ErrorResponse(400, 'Image must be less than 2MB!');
+      throw createCustomError(400, 'Image must be less than 2MB!');
     }
 
     if (!ACCEPTED_IMAGE_TYPES.includes(file.mimetype)) {
       deletfile('../../public/assets/events', file.filename);
-      throw new ErrorResponse(
+      throw createCustomError(
         400,
         '.jpg, .jpeg, .png and .webp files are accepted.',
       );

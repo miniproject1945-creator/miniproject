@@ -1,5 +1,5 @@
-import { keepLoginController, loginController, registerController } from '@/controllers/auth.controller';
-import { verifyToken } from '@/middlewares/auth.middleware';
+import { keepLoginController, loginController, registerController } from '../controllers/auth.controller';
+import { verifyToken } from '../middlewares/auth.middleware';
 import { Router } from 'express';
 
 

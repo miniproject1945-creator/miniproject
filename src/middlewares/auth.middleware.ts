@@ -1,5 +1,5 @@
-import { createCustomError } from '@/utils/error';
-import { verifyJWTToken } from '@/utils/jwt';
+import { createCustomError } from '../utils/error';
+import { verifyJWTToken } from '../utils/jwt';
 import { NextFunction, Request, Response } from 'express';
 
 export const verifyToken = (

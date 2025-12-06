@@ -2,8 +2,8 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 import jwt from "jsonwebtoken";
-import { isCustomError } from "@/utils/error";
-import { responseWithoutData } from "@/utils/response";
+import { isCustomError } from "../utils/error";
+import { responseWithoutData } from "../utils/response";
 
 export const ErrorMiddleware = (
   error: Error, 

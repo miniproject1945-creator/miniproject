@@ -1,4 +1,4 @@
-import { SALT } from "@/configs";
+import { SALT } from "../configs";
 import { compare, genSalt, hash } from "bcrypt";
 
 

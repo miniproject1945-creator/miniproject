@@ -1,10 +1,10 @@
-import prisma from '@/prisma';
-import { AdminEventTransactionQuery } from '@/types/admin.type';
+import prisma from '../prisma';
+import { AdminEventTransactionQuery } from '../types/admin.type';
 import {
   PaymentStatus,
   statusResponse,
   totalSaleResponse,
-} from '@/types/transaction.type';
+} from '../types/transaction.type';
 import { Prisma } from '@prisma/client';
 
 

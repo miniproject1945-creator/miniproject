@@ -1,6 +1,6 @@
-import { createVoucherController, getVoucherByIdController, getVouchersByCreatorController } from "@/controllers/voucher.controller";
+import { createVoucherController, getVoucherByIdController, getVouchersByCreatorController } from "../controllers/voucher.controller";
 import { Router } from "express";
-import { adminGuard, verifyToken } from "@/middlewares/auth.middleware";
+import { adminGuard, verifyToken } from "../middlewares/auth.middleware";
 
 
 const voucherRouter = Router();

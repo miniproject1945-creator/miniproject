@@ -1,5 +1,5 @@
-import prisma from "@/prisma";
-import { CreateVoucher } from "@/types/voucher.type";
+import prisma from "../prisma";
+import { CreateVoucher } from "../types/voucher.type";
 
 
     export async function createVoucher(id: number,data: CreateVoucher) {

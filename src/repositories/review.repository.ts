@@ -1,5 +1,5 @@
-import prisma from "@/prisma";
-import { CreateFeedback } from "@/types/review.type";
+import prisma from "../prisma";
+import { CreateFeedback } from "../types/review.type";
 
     export async function createReview(id: number,data: CreateFeedback) {
         return await prisma.feedback.create({ data: {

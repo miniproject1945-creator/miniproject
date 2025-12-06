@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { EventQuery, EventRequest } from '@/types/event.type';
+import { EventQuery, EventRequest } from '../types/event.type';
 import { 
   createEventService,
   deleteEventService,
@@ -7,7 +7,7 @@ import {
   getEventsBySearchService,
   getEventsService,
   updateEventService
-} from '@/services/event.service';
+} from '../services/event.service';
 
 
   export async function getEventsController(req: Request, res: Response, next: NextFunction) {

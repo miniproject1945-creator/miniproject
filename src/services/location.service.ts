@@ -1,8 +1,8 @@
-import { getLocations } from "@/repositories/location.repository";
-import { LocationQuerry } from "@/types/location.type";
-import { responseWithData } from "@/utils/response";
-import { LocationValidation } from "@/validations/location.validation";
-import { Validation } from "@/validations/validation";
+import { getLocations } from "../repositories/location.repository";
+import { LocationQuerry } from "../types/location.type";
+import { responseWithData } from "../utils/response";
+import { LocationValidation } from "../validations/location.validation";
+import { Validation } from "../validations/validation";
 
 
     export async function getLocationsService(query: LocationQuerry) {

@@ -1,6 +1,6 @@
-import { ErrorResponse } from "@/utils/error";
+import { createCustomError } from "../utils/error";
 import { z } from "zod";
-import { deletfile } from "@/utils/file";
+import { deletfile } from "../utils/file";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -36,16 +36,16 @@ export class TransactionValidation {
     .positive({ message: "Transaction ID must be a Positive number" });
 
   static fileValidation(file: Express.Multer.File) {
-    if (!file) throw new ErrorResponse(400, "Image is required!");
+    if (!file) throw createCustomError(400, "Image is required!");
 
     if (file.size > MAX_FILE_SIZE) {
       deletfile("../../public/assets/transactions", file.filename);
-      throw new ErrorResponse(400, "Image must be less than 2MB");
+      throw createCustomError(400, "Image must be less than 2MB");
     }
 
     if (!ACCEPTED_IMAGE_TYPES.includes(file.mimetype)) {
       deletfile("../../public/assets/transactions", file.filename);
-      throw new ErrorResponse(400, ".jpeg, .jpg, .png, .webp files are only accepted");
+      throw createCustomError(400, ".jpeg, .jpg, .png, .webp files are only accepted");
     }
 
     return file;

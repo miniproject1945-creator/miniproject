@@ -1,6 +1,6 @@
-import { EventQuery, EventRequest } from '@/types/event.type';
-import prisma from '@/prisma';
-import { AdminEventQueryValidated } from '@/types/admin.type';
+import { EventQuery, EventRequest } from '../types/event.type';
+import prisma from '../prisma';
+import { AdminEventQueryValidated } from '../types/admin.type';
 
 
   export async function getEvents(query: EventQuery) {

@@ -1,7 +1,7 @@
-import prisma from '@/prisma';
-import { RegisterRequest } from '@/types/auth.type';
-import { UniqueUserField } from '@/types/user.type';
-import { AdminEventQuery } from '@/types/admin.type';
+import prisma from '../prisma';
+import { RegisterRequest } from '../types/auth.type';
+import { UniqueUserField } from '../types/user.type';
+import { AdminEventQuery } from '../types/admin.type';
 
 
   export async function findUserByUnique(identifier: UniqueUserField) {

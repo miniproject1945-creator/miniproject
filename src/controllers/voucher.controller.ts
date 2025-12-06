@@ -1,5 +1,5 @@
-import { createVoucherService, getVouchersByCreatorService, getVouchersByIdService } from "@/services/voucher.service";
-import { CreateVoucher } from "@/types/voucher.type";
+import { createVoucherService, getVouchersByCreatorService, getVouchersByIdService } from "../services/voucher.service";
+import { CreateVoucher } from "../types/voucher.type";
 import { Request, Response, NextFunction } from "express";
 
 

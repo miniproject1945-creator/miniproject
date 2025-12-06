@@ -1,5 +1,5 @@
-import { getLocationsService } from "@/services/location.service";
-import { LocationQuerry } from "@/types/location.type";
+import { getLocationsService } from "../services/location.service";
+import { LocationQuerry } from "../types/location.type";
 import { NextFunction, Request, Response } from "express";
 
 

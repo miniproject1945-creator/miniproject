@@ -1,4 +1,4 @@
-import { getCategoriesService } from "@/services/category.service";
+import { getCategoriesService } from "../services/category.service";
 import { NextFunction, Request, Response } from "express";
 
 

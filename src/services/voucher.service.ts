@@ -1,11 +1,11 @@
-import prisma from "@/prisma";
-import { getEventById } from "@/repositories/event.repository";
-import { createVoucher, getVoucherById, getVouchersByCreator } from "@/repositories/voucher.repository";
-import { CreateVoucher } from "@/types/voucher.type";
-import { createCustomError } from "@/utils/error";
-import { responseWithData, responseWithoutData } from "@/utils/response";
-import { VoucherValidation } from "@/validations/voucher.validation";
-import { Validation } from "@/validations/validation";
+import prisma from "../prisma";
+import { getEventById } from "../repositories/event.repository";
+import { createVoucher, getVoucherById, getVouchersByCreator } from "../repositories/voucher.repository";
+import { CreateVoucher } from "../types/voucher.type";
+import { createCustomError } from "../utils/error";
+import { responseWithData, responseWithoutData } from "../utils/response";
+import { VoucherValidation } from "../validations/voucher.validation";
+import { Validation } from "../validations/validation";
 
 
     export async function createVoucherService(id: number, body: CreateVoucher) {

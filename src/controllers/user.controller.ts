@@ -1,4 +1,4 @@
-import { getDataProfileService } from "@/services/user.service";
+import { getDataProfileService } from "../services/user.service";
 import { Request, Response, NextFunction } from "express";
 
 

@@ -8,13 +8,13 @@ import {
   getEventService,
   getTransactionDetailsService,
   getTransactionService,
-} from '@/services/admin.service';
+} from '../services/admin.service';
 import {
   AdminEventQuery,
   AdminEventTransactionQuery,
   FilterDate,
-} from '@/types/admin.type';
-import { TransactionStatus } from '@/types/transaction.type';
+} from '../types/admin.type';
+import { TransactionStatus } from '../types/transaction.type';
 import { NextFunction, Request, Response } from 'express';
 
 

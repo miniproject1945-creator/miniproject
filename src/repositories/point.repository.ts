@@ -1,5 +1,5 @@
-import prisma from "@/prisma";
-import { CreatePoint } from "@/types/point.type";
+import prisma from "../prisma";
+import { CreatePoint } from "../types/point.type";
 
 
     export async function createPoint(data: CreatePoint) {

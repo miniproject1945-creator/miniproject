@@ -1,5 +1,5 @@
-import { getAdminEventsController, getEventController, getEventParticipationsController, getEventTransactionsController, getTotalSalesController, getTransactionController, getTransactionDetailsController, getTransactionStatusController } from '@/controllers/admin.controller';
-import { adminGuard, verifyToken } from '@/middlewares/auth.middleware';
+import { getAdminEventsController, getEventController, getEventParticipationsController, getEventTransactionsController, getTotalSalesController, getTransactionController, getTransactionDetailsController, getTransactionStatusController } from '../controllers/admin.controller';
+import { adminGuard, verifyToken } from '../middlewares/auth.middleware';
 import { Router } from 'express';
 
 const AdminRouter = Router();

@@ -1,4 +1,4 @@
-import { JWT_SECRET } from "@/configs";
+import { JWT_SECRET } from "../configs";
 import {sign, verify} from "jsonwebtoken";
 
 export function generateJWTToken(payload: any): string{

@@ -1,24 +1,24 @@
-import prisma from '@/prisma';
-import { getEventIncludeTransactionWithPagination, countEventTransactions, getEventIncludeCategoryLocation  } from '@/repositories/event.repository';
-import { getEventransactions, getTotalSalesGroupByUpdatedAt, getTransactionStatusByUpdatedAt, countEventtransactions, getTransactionHasUser, updateTransactionStatus } from '@/repositories/transaction.repository';
-import { getAdminEvents, countAdminEvents, } from '@/repositories/user.repository';
+import prisma from '../prisma';
+import { getEventIncludeTransactionWithPagination, countEventTransactions, getEventIncludeCategoryLocation  } from '../repositories/event.repository';
+import { getEventransactions, getTotalSalesGroupByUpdatedAt, getTransactionStatusByUpdatedAt, countEventtransactions, getTransactionHasUser, updateTransactionStatus } from '../repositories/transaction.repository';
+import { getAdminEvents, countAdminEvents, } from '../repositories/user.repository';
 import {
   AdminEventQuery,
   AdminEventTransactionQuery,
   FilterDate,
-} from '@/types/admin.type';
-import { TransactionStatus } from '@/types/transaction.type';
-import { createCustomError } from '@/utils/error';
-import { decreamentDate, increamentDate } from '@/utils/generateDate';
+} from '../types/admin.type';
+import { TransactionStatus } from '../types/transaction.type';
+import { createCustomError } from '../utils/error';
+import { decreamentDate, increamentDate } from '../utils/generateDate';
 import {
   responseDataWithPagination,
   responseWithData,
   responseWithoutData,
-} from '@/utils/response';
-import { AdminValidation } from '@/validations/admin.valiation';
-import { EventValidation } from '@/validations/event_validation';
-import { TransactionValidation } from '@/validations/transaction.validation';
-import { Validation } from '@/validations/validation';
+} from '../utils/response';
+import { AdminValidation } from '../validations/admin.valiation';
+import { EventValidation } from '../validations/event_validation';
+import { TransactionValidation } from '../validations/transaction.validation';
+import { Validation } from '../validations/validation';
 
 
   export async function getAdminEventsService(id: number, query: AdminEventQuery) {

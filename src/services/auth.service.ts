@@ -1,16 +1,16 @@
-import prisma from '@/prisma';
-import { findUserByUnique, createUser } from '@/repositories/user.repository';
-import { Decoded, LoginRequest, RegisterRequest } from '@/types/auth.type';
-import { createCustomError } from '@/utils/error';
-import { comparePassword, hashPassword } from '@/utils/hash';
-import { generateJWTToken } from '@/utils/jwt';
+import prisma from '../prisma';
+import { findUserByUnique, createUser } from '../repositories/user.repository';
+import { Decoded, LoginRequest, RegisterRequest } from '../types/auth.type';
+import { createCustomError } from '../utils/error';
+import { comparePassword, hashPassword } from '../utils/hash';
+import { generateJWTToken } from '../utils/jwt';
 import {
   generateReferralCode,
   generateVoucherCode,
-} from '@/utils/randomGenerator';
-import { responseWithData, responseWithoutData } from '@/utils/response';
-import { AuthValidaton } from '@/validations/auth.validation';
-import { Validation } from '@/validations/validation';
+} from '../utils/randomGenerator';
+import { responseWithData, responseWithoutData } from '../utils/response';
+import { AuthValidaton } from '../validations/auth.validation';
+import { Validation } from '../validations/validation';
 
 
   export async function registerService(request: RegisterRequest) {

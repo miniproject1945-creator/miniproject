@@ -1,4 +1,4 @@
-import { getCategoriesController } from "@/controllers/category.controller";
+import { getCategoriesController } from "../controllers/category.controller";
 import { Router } from "express";
 
 
