@@ -1,7 +1,6 @@
 import prisma from "@/prisma";
 
-export class CategoryRepository {
-    static async getCategories() {
+    export async function getCategories() {
         return await prisma.category.findMany();
     }
-}
+

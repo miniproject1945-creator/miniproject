@@ -7,8 +7,8 @@ import {
 } from '@/types/transaction.type';
 import { Prisma } from '@prisma/client';
 
-export class TransactionRepository {
-  static async getEventWaiting(id: number) {
+
+  export async function getEventWaiting(id: number) {
     return await prisma.transaction.findMany({
       where: {
         paymentStatus: PaymentStatus.WAITING,
@@ -25,7 +25,7 @@ export class TransactionRepository {
     });
   }
 
-  static async getEventSuccess(id: number) {
+  export async function getEventSuccess(id: number) {
     const today = new Date().toISOString();
     return await prisma.transaction.findMany({
       where: {
@@ -48,7 +48,7 @@ export class TransactionRepository {
     });
   }
 
-  static async getEventSuccessByDate(id: number) {
+  export async function getEventSuccessByDate(id: number) {
     const today = new Date().toISOString();
     return await prisma.transaction.findMany({
       where: {
@@ -74,7 +74,7 @@ export class TransactionRepository {
     });
   }
 
-  static async getEventTransactions(
+  export async function getEventransactions(
     id: number,
     query: AdminEventTransactionQuery,
   ) {
@@ -91,14 +91,14 @@ export class TransactionRepository {
     });
   }
 
-  static async countEventTransactions(id: number) {
+  export async function countEventtransactions(id: number) {
     return await prisma.transaction.aggregate({
       _count: true,
       where: { event: { user: { id: id } } },
     });
   }
 
-  static async getTotalSalesGroupByUpdatedAt(
+  export async function getTotalSalesGroupByUpdatedAt(
     id: number,
     filter: { gte: Date | string; lte: Date | string },
   ): Promise<totalSaleResponse[]> {
@@ -117,7 +117,7 @@ export class TransactionRepository {
     return await prisma.$queryRaw(query);
   }
 
-  static async getTransactionStatusByUpdatedAt(
+  export async function getTransactionStatusByUpdatedAt(
     id: number,
     filter: { gte: Date | string; lte: Date | string },
   ): Promise<statusResponse[]> {
@@ -139,14 +139,14 @@ export class TransactionRepository {
     return await prisma.$queryRaw(query);
   }
 
-  static async getTransactionHasUser(transactionId: number) {
+  export async function getTransactionHasUser(transactionId: number) {
     return await prisma.transaction.findUnique({
       where: { id: transactionId },
       include: { event: { include: { user: true } } },
     });
   }
 
-  static async updateTransactionStatus(
+  export async function updateTransactionStatus(
     transactionId: number,
     status: PaymentStatus,
   ) {
@@ -156,7 +156,7 @@ export class TransactionRepository {
     });
   }
 
-  static async checkoutUser(transactionId: number, file: Express.Multer.File) {
+  export async function checkoutUser(transactionId: number, file: Express.Multer.File) {
     await prisma.transaction.update({
       where: { id: transactionId },
       data: {
@@ -166,7 +166,7 @@ export class TransactionRepository {
     });
   }
 
-  static async postPaidCheckout(
+  export async function postPaidCheckout(
     transactionId: number,
     file: Express.Multer.File,
   ) {
@@ -179,10 +179,9 @@ export class TransactionRepository {
     });
   }
 
-  static async getDataCheckout(transactionId: number) {
+  export async function getDataCheckout(transactionId: number) {
     return await prisma.transaction.findUnique({
       where: { id: Number(transactionId) },
       include: { event: true },
     });
   }
-}

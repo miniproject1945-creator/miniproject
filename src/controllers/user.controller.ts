@@ -1,11 +1,11 @@
-import { UserService } from "@/services/user.service";
+import { getDataProfileService } from "@/services/user.service";
 import { Request, Response, NextFunction } from "express";
 
-export class UserController {
-    public async getProfile(req: Request, res: Response, next: NextFunction) {
+
+    export async function getProfileController(req: Request, res: Response, next: NextFunction) {
         try {
             const id = res.locals.decoded.id as number;
-            const response = await UserService.getDataProfile(id);
+            const response = await getDataProfileService(id);
             return res.status(200).send(response);
 
         } catch (err) {
@@ -13,6 +13,6 @@ export class UserController {
             
         }
     }
-}
+
 
 

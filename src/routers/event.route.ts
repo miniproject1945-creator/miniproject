@@ -1,50 +1,28 @@
-import { EventController } from '@/controllers/event.controller';
+import { createEventController, deleteEventController, getEventByIdController, getEventsBySearchController, updateEventController } from '@/controllers/event.controller';
 import { adminGuard, verifyToken } from '@/middlewares/auth.middleware';
 import { uploader } from '@/middlewares/uplouder.middleware';
 import { Router } from 'express';
 
-export class EventRouter {
-  private router: Router;
-  private eventController: EventController;
+const EventRouter = Router();
 
-  constructor() {
-    this.router = Router();
-    this.eventController = new EventController();
-    this.initializeRoutes();
-  }
+EventRouter.get("/", getEventByIdController);
+EventRouter.post("/", 
+  verifyToken, 
+  adminGuard,
+  uploader("/events", "/EVENT").single("image"),
+  createEventController,
+)
+EventRouter.get("/search",getEventsBySearchController);
+EventRouter.patch("/:eventId", 
+  verifyToken, 
+  adminGuard,
+  uploader("/events", "/EVENT").single("image"),
+  updateEventController,
+);
+EventRouter.delete("/:eventId",verifyToken, adminGuard, deleteEventController);
+EventRouter.get("/:id", getEventByIdController);
 
-  private initializeRoutes(): void {
-    this.router.get('/', this.eventController.getEvents);
+export default EventRouter;
+  
 
-    this.router.post(
-      '/',
-      verifyToken,
-      adminGuard,
-      uploader('/events', 'EVENT').single('image'),
-      this.eventController.createEvent,
-    );
 
-    this.router.get('/search', this.eventController.getEventsBySearch);
-
-    this.router.patch(
-      '/:eventId',
-      verifyToken,
-      adminGuard,
-      uploader('/events', 'EVENT').single('image'),
-      this.eventController.updateEvent,
-    );
-
-    this.router.delete(
-      '/:eventId',
-      verifyToken,
-      adminGuard,
-      this.eventController.deleteEvent,
-    );
-
-    this.router.get('/:id', this.eventController.getEventById);
-  }
-
-  public getRoutes(): Router {
-    return this.router;
-  }
-}

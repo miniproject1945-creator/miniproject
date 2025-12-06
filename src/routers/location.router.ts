@@ -1,22 +1,8 @@
-import { LocationController } from "@/controllers/location.controller";
+import { getLocationsController } from "@/controllers/location.controller";
 import { Router } from "express";
 
-export class locationRouter {
-  private router: Router;
-  private locationController: LocationController;
+const locationRouter = Router();
 
-    constructor() { 
-    this.router = Router();
-    this.locationController = new LocationController();
-    this.initializeRoutes();
-  }
-    private initializeRoutes():void {
-    this.router.get("/", this.locationController.getLocations);
-    }
+locationRouter.get("/", getLocationsController);
 
-    public getRouter(): Router {
-        return this.router;
-    }
-}
-
-
+export default locationRouter;

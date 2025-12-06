@@ -1,8 +1,8 @@
 import prisma from "@/prisma";
 import { CreateVoucher } from "@/types/voucher.type";
 
-export class VoucherRepository {
-    static async createVoucher(id: number,data: CreateVoucher) {
+
+    export async function createVoucher(id: number,data: CreateVoucher) {
         return await prisma.voucher.create({
             data: {
                 discount: data.discount,
@@ -14,19 +14,19 @@ export class VoucherRepository {
         });
     }
 
-    static async findVouchersById(id: number) {
+    export async function findVouchersById(id: number) {
         return await prisma.voucher.findUnique({
             where:{id},
         });
     }
 
-    static async getVoucherById(id: number, eventId: number) {
+    export async function getVoucherById(id: number, eventId: number) {
         return await prisma.voucher.findMany({
             where: {userId:id, eventId},
         });
     }
 
-    static async getVouchersByCreator(eventId: number) {
+    export async function getVouchersByCreator(eventId: number) {
         return await prisma.voucher.findMany({
             where: {eventId},
         });
@@ -34,4 +34,3 @@ export class VoucherRepository {
 
 
 
-}

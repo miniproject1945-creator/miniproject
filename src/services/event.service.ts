@@ -1,6 +1,17 @@
-import { EventRepository } from '@/repositories/event.repository';
+import {
+   getEvents, 
+   getTotalEvents, 
+   getTotalEventsBySearch, 
+   getEventsBySearch,
+   getEventByIdWithInclude,
+   getEventByUser,
+   getEventById,
+   updateEvent,
+   createEvent,
+   deleteEvent
+  } from '@/repositories/event.repository';
 import { EventQuery, EventRequest } from '@/types/event.type';
-import { ErrorResponse } from '@/utils/error';
+import { createCustomError } from '@/utils/error';
 import {
   responseDataWithPagination,
   responseWithData,
@@ -9,8 +20,8 @@ import {
 import { EventValidation } from '@/validations/event_validation';
 import { Validation } from '@/validations/validation';
 
-export class EventService {
-  static async getEvents(query: EventQuery) {
+
+  export async function getEventsService(query: EventQuery) {
     console.log('INI SERVICE', query);
 
     const eventQuery = Validation.validate(EventValidation.QUERY, query);
@@ -19,8 +30,8 @@ export class EventService {
     if (!eventQuery.page) eventQuery.page = 1;
     if (!eventQuery.limit) eventQuery.limit = 10;
 
-    const response = await EventRepository.getEvents(eventQuery);
-    const totalEvents = await EventRepository.getTotalEvents(eventQuery);
+    const response = await getEvents(eventQuery);
+    const totalEvents = await getTotalEvents(eventQuery);
 
     return responseDataWithPagination(
       200,
@@ -32,13 +43,13 @@ export class EventService {
     );
   }
 
-  static async getEventsBySearch(query: EventQuery) {
+  export async function getEventsBySearchService(query: EventQuery) {
     const eventQuery = Validation.validate(EventValidation.QUERY, query);
     if (!eventQuery.page) eventQuery.page = 1;
     if (!eventQuery.limit) eventQuery.limit = 10;
 
-    const response = await EventRepository.getEventsBySearch(eventQuery);
-    const totalEvent = await EventRepository.getTotalEventsBySearch(eventQuery);
+    const response = await getEventsBySearch(eventQuery);
+    const totalEvent = await getTotalEventsBySearch(eventQuery);
 
     return responseDataWithPagination(
       200,
@@ -50,15 +61,15 @@ export class EventService {
     );
   }
 
-  static async getEventById(query: EventQuery) {
+  export async function getEventByIdService(query: EventQuery) {
     const eventQuery = Validation.validate(EventValidation.QUERY, query);
 
-    const response = await EventRepository.getEventByIdWithInclude(eventQuery);
+    const response = await getEventByIdWithInclude(eventQuery);
 
     return responseWithData(200, true, 'Get events successfully', response);
   }
 
-  static async createEvent(
+  export async function createEventService(
     id: number,
     request: EventRequest,
     file: Express.Multer.File,
@@ -66,12 +77,12 @@ export class EventService {
     const eventRequest = Validation.validate(EventValidation.CREATE, request);
     const validateFile = EventValidation.fileValidation(file);
 
-    await EventRepository.createEvent(id, eventRequest, validateFile);
+    await createEvent(id, eventRequest, validateFile);
     return responseWithoutData(201, true, 'Create event successfully');
   }
 
-  static async getEventByUser(id: number) {
-    const response = await EventRepository.getEventByUser(id);
+  export async function getEventByUserService(id: number) {
+    const response = await getEventByUser(id);
     return responseWithData(
       200,
       true,
@@ -80,7 +91,7 @@ export class EventService {
     );
   }
 
-  static async updateEvent(
+  export async function updateEventService(
     id: number,
     eventId: string,
     request: EventRequest,
@@ -90,15 +101,15 @@ export class EventService {
     const validateFile = EventValidation.fileValidationWithOptional(file);
     const newEventId = Validation.validate(EventValidation.EVENT_ID, eventId);
 
-    const event = await EventRepository.getEventById(Number(newEventId));
+    const event = await getEventById(Number(newEventId));
 
-    if (!event) throw new ErrorResponse(404, 'Event not found!');
+    if (!event) throw createCustomError(404, 'Event not found!');
 
     if (event.userId !== id) {
-      throw new ErrorResponse(401, 'This event is not yours!');
+      throw createCustomError(401, 'This event is not yours!');
     }
 
-    const response = await EventRepository.updateEvent(
+    const response = await updateEvent(
       id,
       Number(newEventId),
       eventRequest,
@@ -108,22 +119,21 @@ export class EventService {
     return responseWithData(200, true, 'Update event successfully', response);
   }
 
-  static async deleteEvent(id: number, eventId: string) {
+  export async function deleteEventService(id: number, eventId: string) {
     const newEventId = Validation.validate(EventValidation.EVENT_ID, eventId);
 
-    const event = await EventRepository.getEventById(Number(newEventId));
+    const event = await getEventById(Number(newEventId));
 
-    if (!event) throw new ErrorResponse(404, 'Event not found!');
+    if (!event) throw createCustomError(404, 'Event not found!');
 
     if (event.userId !== id) {
-      throw new ErrorResponse(401, 'This event is not yours!');
+      throw createCustomError(401, 'This event is not yours!');
     }
 
     if (event.availableSeats !== event.maxCapacity) {
-      throw new ErrorResponse(400, 'Event is not empty!');
+      throw createCustomError(400, 'Event is not empty!');
     }
 
-    await EventRepository.deleteEvent(Number(newEventId));
+    await deleteEvent(Number(newEventId));
     return responseWithoutData(200, true, 'Delete event successfully');
   }
-}

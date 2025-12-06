@@ -1,7 +1,7 @@
 import prisma from '@/prisma';
-import { UserRepository } from '@/repositories/user.repository';
+import { findUserByUnique, createUser } from '@/repositories/user.repository';
 import { Decoded, LoginRequest, RegisterRequest } from '@/types/auth.type';
-import { ErrorResponse } from '@/utils/error';
+import { createCustomError } from '@/utils/error';
 import { comparePassword, hashPassword } from '@/utils/hash';
 import { generateJWTToken } from '@/utils/jwt';
 import {
@@ -12,26 +12,26 @@ import { responseWithData, responseWithoutData } from '@/utils/response';
 import { AuthValidaton } from '@/validations/auth.validation';
 import { Validation } from '@/validations/validation';
 
-export class AuthService {
-  static async register(request: RegisterRequest) {
+
+  export async function registerService(request: RegisterRequest) {
     const { email, isAdmin, password, username, referralCode } =
       Validation.validate(AuthValidaton.REGISTER, request);
 
-    const userByUsername = await UserRepository.findUserByUnique({ username });
+    const userByUsername = await findUserByUnique({ username });
     if (userByUsername) {
-      throw new ErrorResponse(400, 'Username already exists!');
+      throw createCustomError(400, 'Username already exists!');
     }
 
-    const userByEmail = await UserRepository.findUserByUnique({ email });
-    if (userByEmail) throw new ErrorResponse(400, 'Email already exists!');
+    const userByEmail = await findUserByUnique({ email });
+    if (userByEmail) throw createCustomError(400, 'Email already exists!');
 
     if (!isAdmin && referralCode) {
-      const userByReferralCode = await UserRepository.findUserByUnique({
+      const userByReferralCode = await findUserByUnique({
         referralCode,
       });
 
       if (!userByReferralCode) {
-        throw new ErrorResponse(400, 'Invalid referral code!');
+        throw createCustomError(400, 'Invalid referral code!');
       } else {
         await prisma.$transaction(async (tx) => {
           const currentDate = new Date();
@@ -83,7 +83,7 @@ export class AuthService {
       }
     }
 
-    await UserRepository.createUser({
+    await createUser({
       email,
       isAdmin,
       username,
@@ -96,28 +96,28 @@ export class AuthService {
     return responseWithoutData(201, true, 'Registration was successful');
   }
 
-  static async login(request: LoginRequest) {
+  export async function loginService(request: LoginRequest) {
     const { identity, password } = Validation.validate(
       AuthValidaton.LOGIN,
       request,
     );
 
     let findUser = null;
-    const userByUsername = await UserRepository.findUserByUnique({
+    const userByUsername = await findUserByUnique({
       username: identity,
     });
     if (!userByUsername) {
-      const userByEmail = await UserRepository.findUserByUnique({
+      const userByEmail = await findUserByUnique({
         email: identity,
       });
       findUser = userByEmail;
     }
 
     const user = userByUsername ? userByUsername : findUser;
-    if (!user) throw new ErrorResponse(404, 'Username or Email not exists!');
+    if (!user) throw createCustomError(404, 'Username or Email not exists!');
 
     const compare = await comparePassword(password, user.password);
-    if (!compare) throw new ErrorResponse(401, 'Password is wrong!');
+    if (!compare) throw createCustomError(401, 'Password is wrong!');
 
     const token = generateJWTToken({ id: user.id, isAdmin: user.isAdmin });
     return responseWithData(200, true, 'Login was successful', {
@@ -127,14 +127,14 @@ export class AuthService {
     });
   }
 
-  static async keepLogin(decoded: Decoded) {
+  export async function keepLoginService(decoded: Decoded) {
     const token = generateJWTToken({
       id: decoded.id,
       isAdmin: decoded.isAdmin,
     });
 
-    const user = await UserRepository.findUserByUnique({ id: decoded.id });
-    if (!user) throw new ErrorResponse(404, 'User not found!');
+    const user = await findUserByUnique({ id: decoded.id });
+    if (!user) throw createCustomError(404, 'User not found!');
 
     return responseWithData(200, true, 'Keep login was successful', {
       username: user.username,
@@ -142,4 +142,3 @@ export class AuthService {
       token,
     });
   }
-}

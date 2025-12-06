@@ -1,27 +1,9 @@
-import { ReviewController } from "@/controllers/review.controller";
-import { adminGuard, userGuard, verifyToken } from "@/middlewares/auth.middleware";
+import { createFeedbackController } from "@/controllers/review.controller";
+import { userGuard, verifyToken } from "@/middlewares/auth.middleware";
 import { Router } from "express";
 
-export class reviewRouter {
-    private router: Router
-    private reviewController: ReviewController;
-    
-    constructor() {
-        this.router = Router();
-        this.reviewController = new ReviewController();
-        this.initializeRoutes();
-    }
+const reviewRouter = Router();
 
-    private initializeRoutes(): void {
-        this.router.post(
-            "/", 
-            verifyToken, 
-            userGuard, 
-            this.reviewController.createFeedback);
-    }
+reviewRouter.post("/", verifyToken, userGuard, createFeedbackController);
 
-    public getRouter(): Router {
-        return this.router;
-    }
-}
-
+export default reviewRouter;

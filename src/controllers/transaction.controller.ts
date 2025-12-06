@@ -1,14 +1,21 @@
-import { TransactionService } from "@/services/transaction.service";
+import { 
+    createTransactionService,
+    getPaymentStatusWaitingService,
+    getPaymentStatusSuccessService,
+    getPaymentStatusSuccessByDateService,
+    checkoutUserService,
+
+ } from "@/services/transaction.service";
 import { NextFunction, Request, Response } from "express";
-import { TransactionCheckout, TransactionRequest } from "@/types/transaction.type";
+import { TransactionRequest } from "@/types/transaction.type";
 
 
-export class TransactionController {
-    public async createTransaction(req: Request, res: Response, next: NextFunction) {
+
+    export async function createTransactionController(req: Request, res: Response, next: NextFunction) {
         try {
             const id = res.locals.decoded.id as number;
             const request = req.body as TransactionRequest;
-            const response = await TransactionService.createTransaction(id, request);
+            const response = await createTransactionService(id, request);
             return res.status(201).send(response);
         } catch (error) {
             next(error);
@@ -16,37 +23,37 @@ export class TransactionController {
 
     }
 
-    public async getEventTransactionsWaiting(req: Request, res: Response, next: NextFunction) {
+    export async function getEventTransactionsWaitingController(req: Request, res: Response, next: NextFunction) {
         try {
             const id = res.locals.decoded.id as number; 
-            const response = await TransactionService.getPaymentStatusWaiting(id);
+            const response = await getPaymentStatusWaitingService(id);
             return res.status(200).send(response);
         } catch (error) {
             next(error);
         }
     }
 
-    public async getEventTrasactionsSucces(req: Request, res: Response, next: NextFunction) {
+    export async function getEventTrasactionsSuccesController(req: Request, res: Response, next: NextFunction) {
         try {
             const id = res.locals.decoded.id as number; 
-            const response = await TransactionService.getPaymentStatusSuccess(id);
+            const response = await getPaymentStatusSuccessService(id);
             return res.status(200).send(response);
         } catch (error) {
             next(error);
         }
     }
 
-    public async getEventTransactionsSuccessByDate(req: Request, res: Response, next: NextFunction) {
+    export async function getEventTransactionsSuccessByDateController(req: Request, res: Response, next: NextFunction) {
         try {
             const id = res.locals.decoded.id as number; 
-            const response = await TransactionService.getPaymentStatusSuccessByDate(id);
+            const response = await getPaymentStatusSuccessByDateService(id);
             return res.status(200).send(response);
         } catch (error) {
             next(error);
         }
     }
 
-    public async checkoutUser(req: Request, res: Response, next: NextFunction) {
+    export async function checkoutUserController(req: Request, res: Response, next: NextFunction) {
         try {
             const id = res.locals.decoded.id as number; 
             const transactionId = req.params.transactionId;
@@ -54,7 +61,7 @@ export class TransactionController {
 
             console.log("cek file name", file);
 
-            const response = await TransactionService.checkoutUser(id, transactionId, file);
+            const response = await checkoutUserService(id, transactionId, file);
             return res.status(200).send(response);
         } catch (error) {
             next(error);
@@ -63,6 +70,5 @@ export class TransactionController {
     }
 
 
-}
 
 

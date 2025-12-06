@@ -2,8 +2,8 @@ import { EventQuery, EventRequest } from '@/types/event.type';
 import prisma from '@/prisma';
 import { AdminEventQueryValidated } from '@/types/admin.type';
 
-export class EventRepository {
-  static async getEvents(query: EventQuery) {
+
+  export async function getEvents(query: EventQuery) {
     const filter: any = {
       price: query.price ? Number(query.price) : undefined,
       locationId: query.locationId ? Number(query.locationId) : undefined,
@@ -37,7 +37,7 @@ export class EventRepository {
     });
   }
 
-  static async getTotalEvents(query: EventQuery) {
+  export async function getTotalEvents(query: EventQuery) {
     const filter: any = {
       price: query.price ? Number(query.price) : undefined,
       locationId: query.locationId ? Number(query.locationId) : undefined,
@@ -67,7 +67,7 @@ export class EventRepository {
     });
   }
 
-  static async getEventsBySearch(query: EventQuery) {
+  export async function getEventsBySearch(query: EventQuery) {
     const filter: any = {
       name: query.name ? String(query.name) : undefined,
       locationId: query.locationId ? Number(query.locationId) : undefined,
@@ -89,7 +89,7 @@ export class EventRepository {
     });
   }
 
-  static async getTotalEventsBySearch(query: EventQuery) {
+  export async function getTotalEventsBySearch(query: EventQuery) {
     const filter: any = {
       name: query.name ? String(query.name) : undefined,
       locationId: query.locationId ? Number(query.locationId) : undefined,
@@ -105,7 +105,7 @@ export class EventRepository {
     });
   }
 
-  static async getEventByIdWithInclude(query: EventQuery) {
+  export async function getEventByIdWithInclude(query: EventQuery) {
     const eventId = Number(query.id);
 
     return await prisma.event.findMany({
@@ -114,11 +114,11 @@ export class EventRepository {
     });
   }
 
-  static async getEventById(id: number) {
+  export async function getEventById(id: number) {
     return await prisma.event.findUnique({ where: { id } });
   }
 
-  static async getEventByIdWithTransaction(eventId: number, userId: number) {
+  export async function getEventByIdWithTransaction(eventId: number, userId: number) {
     return await prisma.event.findUnique({
       where: { id: eventId },
       include: {
@@ -127,7 +127,7 @@ export class EventRepository {
     });
   }
 
-  static async createEvent(
+  export async function createEvent(
     id: number,
     request: EventRequest,
     file: Express.Multer.File,
@@ -150,13 +150,13 @@ export class EventRepository {
     });
   }
 
-  static async getEventByUser(id: number) {
+  export async function getEventByUser(id: number) {
     return await prisma.event.findMany({
       where: { userId: id },
     });
   }
 
-  static async getEventIncludeTransactionWithPagination(
+  export async function getEventIncludeTransactionWithPagination(
     id: number,
     query: AdminEventQueryValidated,
   ) {
@@ -175,21 +175,21 @@ export class EventRepository {
     });
   }
 
-  static async countEventTransactions(eventId: number) {
+  export async function countEventTransactions(eventId: number) {
     return await prisma.event.findUnique({
       where: { id: eventId },
       select: { _count: { select: { transactions: true } } },
     });
   }
 
-  static async getEventIncludeCategoryLocation(id: number) {
+  export async function getEventIncludeCategoryLocation(id: number) {
     return await prisma.event.findUnique({
       where: { id },
       include: { category: true, location: true },
     });
   }
 
-  static async updateEvent(
+  export async function updateEvent(
     id: number,
     eventId: number,
     request: EventRequest,
@@ -214,7 +214,6 @@ export class EventRepository {
     });
   }
 
-  static async deleteEvent(id: number) {
+  export async function deleteEvent(id: number) {
     return await prisma.event.delete({ where: { id } });
   }
-}

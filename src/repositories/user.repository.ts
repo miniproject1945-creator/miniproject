@@ -3,8 +3,8 @@ import { RegisterRequest } from '@/types/auth.type';
 import { UniqueUserField } from '@/types/user.type';
 import { AdminEventQuery } from '@/types/admin.type';
 
-export class UserRepository {
-  static async findUserByUnique(identifier: UniqueUserField) {
+
+  export async function findUserByUnique(identifier: UniqueUserField) {
     const { email, id, referralCode, username } = identifier;
 
     let whereCondition: any = {};
@@ -20,11 +20,11 @@ export class UserRepository {
     });
   }
 
-  static async createUser(request: RegisterRequest) {
+  export async function createUser(request: RegisterRequest) {
     return await prisma.user.create({ data: request });
   }
 
-  static async getAdminEvents(id: number, query: AdminEventQuery) {
+  export async function getAdminEvents(id: number, query: AdminEventQuery) {
     return await prisma.user.findUnique({
       where: { id },
       include: {
@@ -39,7 +39,7 @@ export class UserRepository {
     });
   }
 
-  static async countAdminEvents(id: number, query: AdminEventQuery) {
+  export async function countAdminEvents(id: number, query: AdminEventQuery) {
     return await prisma.user.findUnique({
       where: { id },
       select: {
@@ -50,7 +50,7 @@ export class UserRepository {
     });
   }
 
-  static async getUserProfile(id: number) {
+  export async function getUserProfile(id: number) {
     return await prisma.user.findUnique({
       where: { id: id },
       include: {
@@ -60,10 +60,9 @@ export class UserRepository {
     });
   }
 
-  static async findUserByIdIncludePoint(id: number) {
+  export async function findUserByIdIncludePoint(id: number) {
     return await prisma.user.findUnique({
       where: { id },
       include: { point: true },
     });
   }
-}

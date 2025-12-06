@@ -1,42 +1,41 @@
 import prisma from '@/prisma';
-import { EventRepository } from '@/repositories/event.repository';
-import { ReviewRepository } from '@/repositories/review.repository';
-import { TransactionRepository } from '@/repositories/transaction.repository';
-import { UserRepository } from '@/repositories/user.repository';
-import { VoucherRepository } from '@/repositories/voucher.repository';
+import { getEventByIdWithTransaction } from '@/repositories/event.repository';
+import { getEventWaiting, getEventSuccess, getEventSuccessByDate, getDataCheckout, postPaidCheckout} from '@/repositories/transaction.repository';
+import { findUserByIdIncludePoint, } from '@/repositories/user.repository';
+import { findVouchersById } from '@/repositories/voucher.repository';
 import {
   TransactionCheckout,
   TransactionRequest,
 } from '@/types/transaction.type';
-import { ErrorResponse } from '@/utils/error';
+import { createCustomError } from '@/utils/error';
 import { generateTicketCode } from '@/utils/randomGenerator';
 import { responseWithData, responseWithoutData } from '@/utils/response';
 import { TransactionValidation } from '@/validations/transaction.validation';
 import { Validation } from '@/validations/validation';
 import { PaymentStatus } from '@/types/transaction.type';
 
-export class TransactionService {
-  static async createTransaction(id: number, request: TransactionRequest) {
+
+  export async function createTransactionService(id: number, request: TransactionRequest) {
     const { eventId, seatRequests, redeemedPoints, voucherId } =
       Validation.validate(TransactionValidation.CREATE, request);
 
     
-    const event = await EventRepository.getEventByIdWithTransaction(
+    const event = await getEventByIdWithTransaction(
       eventId,
       id,
     );
-    if (!event) throw new ErrorResponse(404, 'Event not found!');
+    if (!event) throw createCustomError(404, 'Event not found!');
 
     if (seatRequests > event.limitCheckout) {
-      throw new ErrorResponse(400, 'Seat requests exceeds limit checkout!');
+      throw createCustomError(400, 'Seat requests exceeds limit checkout!');
     }
 
     if (event.availableSeats < seatRequests) {
-      throw new ErrorResponse(400, 'Not enough seats available!');
+      throw createCustomError(400, 'Not enough seats available!');
     }
 
     if (new Date(event.endDate).getTime() < new Date().getTime()) {
-      throw new ErrorResponse(400, 'Event has ended!');
+      throw createCustomError(400, 'Event has ended!');
     }
 
     if (event.transactions.length) {
@@ -45,52 +44,52 @@ export class TransactionService {
       }, 0);
 
       if (userTransactions >= event.limitCheckout) {
-        throw new ErrorResponse(400, 'You have reached limit checkout!');
+        throw createCustomError(400, 'You have reached limit checkout!');
       }
 
       if (userTransactions + seatRequests > event.limitCheckout) {
-        throw new ErrorResponse(400, 'Seat requests exceeds limit checkout!');
+        throw createCustomError(400, 'Seat requests exceeds limit checkout!');
       }
     }
 
-    // check voucher owned by user and event
+    
     let voucher: any = null;
     if (voucherId) {
-      voucher = await VoucherRepository.findVouchersById(voucherId);
-      if (!voucher) throw new ErrorResponse(404, 'Voucher not found!');
+      voucher = await findVouchersById(voucherId);
+      if (!voucher) throw createCustomError(404, 'Voucher not found!');
 
       if (voucher.userId !== id && voucher.eventId !== eventId) {
-        throw new ErrorResponse(400, 'Voucher cannot be used!');
+        throw createCustomError(400, 'Voucher cannot be used!');
       }
 
       if (
         !voucher.eventId &&
         new Date(voucher.expiryDate!).getTime() < new Date().getTime()
       ) {
-        throw new ErrorResponse(400, 'Voucher has expired!');
+        throw createCustomError(400, 'Voucher has expired!');
       }
 
       if (voucher.usage >= voucher.maxUsage) {
-        throw new ErrorResponse(400, 'Voucher has reached its limit!');
+        throw createCustomError(400, 'Voucher has reached its limit!');
       }
     }
 
-    // check redeemable points
-    const user = await UserRepository.findUserByIdIncludePoint(id);
+    
+    const user = await findUserByIdIncludePoint(id);
     if (redeemedPoints) {
-      if (!user?.point) throw new ErrorResponse(400, 'User has no points!');
+      if (!user?.point) throw createCustomError(400, 'User has no points!');
 
       if (redeemedPoints > user.point.balance) {
-        throw new ErrorResponse(400, 'Redeemed points exceeds balance!');
+        throw createCustomError(400, 'Redeemed points exceeds balance!');
       }
 
       if (new Date(user.point.expiryDate).getTime() < new Date().getTime()) {
-        throw new ErrorResponse(400, 'Point has expired!');
+        throw createCustomError(400, 'Point has expired!');
       }
     }
 
     if (!event.price && (redeemedPoints || voucherId)) {
-      throw new ErrorResponse(400, 'Event is free!');
+      throw createCustomError(400, 'Event is free!');
     }
 
     // transaction for event is free
@@ -279,8 +278,8 @@ export class TransactionService {
     return responseWithoutData(201, true, 'Transaction created!');
   }
 
-  static async getPaymentStatusWaiting(id: number) {
-    const transactions = await TransactionRepository.getEventWaiting(id);
+  export async function getPaymentStatusWaitingService(id: number) {
+    const transactions = await getEventWaiting(id);
 
     const response = transactions.map((transaction) => {
       return { transactionId: transaction.id, originalAmount:transaction.originalAmount, discountedAmount:transaction.discountedAmount, ...transaction.event };
@@ -294,8 +293,8 @@ export class TransactionService {
     );
   }
 
-  static async getPaymentStatusSuccess(id: number) {
-    const transactions = await TransactionRepository.getEventSuccess(id);
+  export async function getPaymentStatusSuccessService(id: number) {
+    const transactions = await getEventSuccess(id);
 
     const response = transactions.map((transaction) => {
       return { ...transaction.event, originalAmount:transaction.originalAmount, discountedAmount:transaction.discountedAmount};
@@ -309,8 +308,8 @@ export class TransactionService {
     );
   }
 
-  static async getPaymentStatusSuccessByDate(id: number) {
-    const transactions = await TransactionRepository.getEventSuccessByDate(id);
+  export async function getPaymentStatusSuccessByDateService(id: number) {
+    const transactions = await getEventSuccessByDate(id);
 
     const response = transactions.map((transaction) => {
       return { ...transaction.event, originalAmount:transaction.originalAmount, discountedAmount:transaction.discountedAmount };
@@ -324,7 +323,7 @@ export class TransactionService {
     );
   }
 
-  static async checkoutUser(
+  export async function checkoutUserService(
     id: number,
     transactionId: string,
     file: Express.Multer.File,
@@ -335,20 +334,20 @@ export class TransactionService {
     );
     const validateFile = TransactionValidation.fileValidation(file);
 
-    const userTransactions = await TransactionRepository.getDataCheckout(
+    const userTransactions = await getDataCheckout(
       Number(newTransactionId),
     );
     console.log('TEST', userTransactions);
     if (!userTransactions) {
-      throw new ErrorResponse(404, 'Transaction not found!');
+      throw createCustomError(404, 'Transaction not found!');
     }
 
     if (userTransactions.userId !== id) {
-      throw new ErrorResponse(401, 'Transaction is not yours');
+      throw createCustomError(401, 'Transaction is not yours');
     }
 
     if (userTransactions.paymentStatus !== PaymentStatus.WAITING) {
-      throw new ErrorResponse(
+      throw createCustomError(
         401,
         'Transaction has been paid or the transaction status is complete',
       );
@@ -356,14 +355,13 @@ export class TransactionService {
 
     const today = new Date().getTime();
     if (userTransactions.event.endDate.getTime() < today) {
-      throw new ErrorResponse(400, 'Event time has passed');
+      throw createCustomError(400, 'Event time has passed');
     }
 
-    await TransactionRepository.postPaidCheckout(
+    await postPaidCheckout(
       Number(newTransactionId),
       validateFile,
     );
 
     return responseWithoutData(200, true, 'Payment successful');
   }
-}

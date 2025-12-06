@@ -1,8 +1,12 @@
-export class ErrorResponse extends Error{
-    status : number;
+export interface CustomError {
+  status: number;
+  message: string;
+}
 
-    constructor(status: number, message: string){
-        super(message);
-        this.status=status;
-    }
+export function createCustomError(status: number, message: string): CustomError {
+  return { status, message };
+}
+
+export function isCustomError(error: any): error is CustomError {
+  return error && typeof error.status === "number" && typeof error.message === "string";
 }

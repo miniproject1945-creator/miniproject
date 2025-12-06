@@ -1,8 +1,8 @@
 import prisma from "@/prisma";
 import { CreatePoint } from "@/types/point.type";
 
-export class PointRepository {
-    static async createPoint(data: CreatePoint) {
+
+    export async function createPoint(data: CreatePoint) {
         return await prisma.point.create({
             data: {
                 balance: data.balance,
@@ -13,6 +13,6 @@ export class PointRepository {
             },
         });
     }
-}
+
 
 

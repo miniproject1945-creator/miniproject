@@ -1,9 +1,7 @@
 import prisma from "@/prisma";
 import { CreateFeedback } from "@/types/review.type";
-import { connect } from "http2";
 
-export class ReviewRepository {
-    static async createReview(id: number,data: CreateFeedback) {
+    export async function createReview(id: number,data: CreateFeedback) {
         return await prisma.feedback.create({ data: {
             rating: data.rating,
             message: data.message,
@@ -12,4 +10,3 @@ export class ReviewRepository {
         } });
     }
 
-}
