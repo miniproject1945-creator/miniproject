@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const admin_controller_1 = require("../controllers/admin.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const express_1 = require("express");
+const AdminRouter = (0, express_1.Router)();
+AdminRouter.get("/events", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getAdminEventsController);
+AdminRouter.get("/events/transactios", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getEventTransactionsController);
+AdminRouter.get("/events/:eventId", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getEventController);
+AdminRouter.get("events/:eventId/participations", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getEventParticipationsController);
+AdminRouter.get("/total-sales", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getTotalSalesController);
+AdminRouter.get("/transaction-status", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getTransactionStatusController);
+AdminRouter.get("/transaction/:transactionId", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getTransactionController);
+AdminRouter.get("/transaction/:transactionId/details", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getTransactionDetailsController);
+AdminRouter.get("transaction/:transactionId/status", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getTransactionStatusController);
+exports.default = AdminRouter;
