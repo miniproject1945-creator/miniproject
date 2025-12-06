@@ -1,54 +1,42 @@
-import express, { json, urlencoded } from 'express';
-import cors from 'cors';
-import { ErrorMiddleware } from './middlewares/error.middleware';
-import { AuthRouter } from './routers/auth.router';
-import { locationRouter } from './routers/location.router';
-import { CategoryRouter } from './routers/category.router';
-import { EventRouter } from './routers/event.route';
-import { userRouter } from './routers/user.router';
-import { join } from 'path';
-import { voucherRouter } from './routers/voucher.router';
-import { reviewRouter } from './routers/review.router';
-import { transactionRouter } from './routers/transaction.router';
-import { AdminRouter } from './routers/admin.router';
-export default class App {
-    app;
-    constructor() {
-        this.app = express();
-        this.configure();
-        this.routes();
-        this.handleError();
-    }
-    configure() {
-        this.app.use(cors());
-        this.app.use(json());
-        this.app.use(urlencoded({ extended: true }));
-    }
-    handleError() {
-        this.app.use(ErrorMiddleware);
-    }
-    routes() {
-        const authRouter = new AuthRouter();
-        const LocationRouter = new locationRouter();
-        const categoryRouter = new CategoryRouter();
-        const eventRouter = new EventRouter();
-        const UserRouter = new userRouter();
-        const VoucherRouter = new voucherRouter();
-        const ReviewRouter = new reviewRouter();
-        const TransactionRouter = new transactionRouter();
-        const adminRouter = new AdminRouter();
-        this.app.get('/', (req, res) => {
-            res.send(`Hello !!`);
-        });
-        this.app.use('/', express.static(join(__dirname, '../public')));
-        this.app.use('/auth', authRouter.getRoutes());
-        this.app.use('/locations', LocationRouter.getRouter());
-        this.app.use('/categories', categoryRouter.getRoutes());
-        this.app.use('/events', eventRouter.getRoutes());
-        this.app.use('/user', UserRouter.getRouter());
-        this.app.use('/vouchers', VoucherRouter.getRouter());
-        this.app.use('/reviews', ReviewRouter.getRouter());
-        this.app.use('/transactions', TransactionRouter.getRouter());
-        this.app.use('/admin', adminRouter.getRoutes());
-    }
-}
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const configs_1 = require("./configs");
+const error_middleware_1 = require("./middlewares/error.middleware");
+const admin_router_1 = __importDefault(require("./routers/admin.router"));
+const location_router_1 = __importDefault(require("./routers/location.router"));
+const category_router_1 = __importDefault(require("./routers/category.router"));
+const event_route_1 = __importDefault(require("./routers/event.route"));
+const user_router_1 = __importDefault(require("./routers/user.router"));
+const voucher_router_1 = __importDefault(require("./routers/voucher.router"));
+const review_router_1 = __importDefault(require("./routers/review.router"));
+const transaction_router_1 = __importDefault(require("./routers/transaction.router"));
+const auth_router_1 = __importDefault(require("./routers/auth.router"));
+const path_1 = require("path");
+const app = (0, express_1.default)();
+// middleware
+app.use((0, cors_1.default)());
+app.use(express_1.default.json());
+// Routers
+app.get("/", (req, res) => {
+    res.send("This is mini project");
+});
+app.use("/", express_1.default.static((0, path_1.join)(__dirname, "../public")));
+app.use("/auth", auth_router_1.default);
+app.use("locations", location_router_1.default);
+app.use("/categories", category_router_1.default);
+app.use("/events", event_route_1.default);
+app.use("/user", user_router_1.default);
+app.use("/vouchers", voucher_router_1.default);
+app.use("/reviews", review_router_1.default);
+app.use("/transactions", transaction_router_1.default);
+app.use("/admin", admin_router_1.default);
+// error middleware
+app.use(error_middleware_1.ErrorMiddleware);
+app.listen(configs_1.PORT, () => {
+    console.log(`server started on port ${configs_1.PORT}`);
+});

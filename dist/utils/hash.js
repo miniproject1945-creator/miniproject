@@ -1,9 +1,14 @@
-import { SALT } from "@/configs";
-import { compare, genSalt, hash } from "bcrypt";
-export const hashPassword = async (password) => {
-    const generateSalt = await genSalt(Number(SALT));
-    return await hash(password, generateSalt);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.comparePassword = exports.hashPassword = void 0;
+const configs_1 = require("../configs");
+const bcrypt_1 = require("bcrypt");
+const hashPassword = async (password) => {
+    const generateSalt = await (0, bcrypt_1.genSalt)(Number(configs_1.SALT));
+    return await (0, bcrypt_1.hash)(password, generateSalt);
 };
-export const comparePassword = async (password, hashPassword) => {
-    return await compare(password, hashPassword);
+exports.hashPassword = hashPassword;
+const comparePassword = async (password, hashPassword) => {
+    return await (0, bcrypt_1.compare)(password, hashPassword);
 };
+exports.comparePassword = comparePassword;

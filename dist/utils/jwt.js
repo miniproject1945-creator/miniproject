@@ -1,8 +1,12 @@
-import { JWT_SECRET } from "@/configs";
-import { sign, verify } from "jsonwebtoken";
-export function generateJWTToken(payload) {
-    return sign(payload, JWT_SECRET);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateJWTToken = generateJWTToken;
+exports.verifyJWTToken = verifyJWTToken;
+const configs_1 = require("../configs");
+const jsonwebtoken_1 = require("jsonwebtoken");
+function generateJWTToken(payload) {
+    return (0, jsonwebtoken_1.sign)(payload, configs_1.JWT_SECRET);
 }
-export function verifyJWTToken(token) {
-    return verify(token, JWT_SECRET);
+function verifyJWTToken(token) {
+    return (0, jsonwebtoken_1.verify)(token, configs_1.JWT_SECRET);
 }

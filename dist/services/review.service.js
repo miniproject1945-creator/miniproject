@@ -1,15 +1,16 @@
-import { ReviewRepository } from "@/repositories/review.repository";
-import { ErrorResponse } from "@/utils/error";
-import { responseWithoutData } from "@/utils/response";
-import { ReviewValidation } from "@/validations/review.validation";
-import { Validation } from "@/validations/validation";
-export class ReviewService {
-    static async createReview(id, data) {
-        const reviewData = Validation.validate(ReviewValidation.CREATE, data);
-        if (!reviewData.rating) {
-            throw new ErrorResponse(400, 'Rating is required');
-        }
-        await ReviewRepository.createReview(id, reviewData);
-        return responseWithoutData(201, true, 'Review created successfully');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createReviewService = createReviewService;
+const review_repository_1 = require("../repositories/review.repository");
+const error_1 = require("../utils/error");
+const response_1 = require("../utils/response");
+const review_validation_1 = require("../validations/review.validation");
+const validation_1 = require("../validations/validation");
+async function createReviewService(id, data) {
+    const reviewData = validation_1.Validation.validate(review_validation_1.ReviewValidation.CREATE, data);
+    if (!reviewData.rating) {
+        throw (0, error_1.createCustomError)(400, 'Rating is required');
     }
+    await (0, review_repository_1.createReview)(id, reviewData);
+    return (0, response_1.responseWithoutData)(201, true, 'Review created successfully');
 }

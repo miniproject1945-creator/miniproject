@@ -1,18 +1,8 @@
-import { ReviewController } from "@/controllers/review.controller";
-import { userGuard, verifyToken } from "@/middlewares/auth.middleware";
-import { Router } from "express";
-export class reviewRouter {
-    router;
-    reviewController;
-    constructor() {
-        this.router = Router();
-        this.reviewController = new ReviewController();
-        this.initializeRoutes();
-    }
-    initializeRoutes() {
-        this.router.post("/", verifyToken, userGuard, this.reviewController.createFeedback);
-    }
-    getRouter() {
-        return this.router;
-    }
-}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const review_controller_1 = require("../controllers/review.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const express_1 = require("express");
+const reviewRouter = (0, express_1.Router)();
+reviewRouter.post("/", auth_middleware_1.verifyToken, auth_middleware_1.userGuard, review_controller_1.createFeedbackController);
+exports.default = reviewRouter;

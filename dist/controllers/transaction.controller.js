@@ -1,57 +1,62 @@
-import { TransactionService } from "@/services/transaction.service";
-export class TransactionController {
-    async createTransaction(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const request = req.body;
-            const response = await TransactionService.createTransaction(id, request);
-            return res.status(201).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createTransactionController = createTransactionController;
+exports.getEventTransactionsWaitingController = getEventTransactionsWaitingController;
+exports.getEventTrasactionsSuccesController = getEventTrasactionsSuccesController;
+exports.getEventTransactionsSuccessByDateController = getEventTransactionsSuccessByDateController;
+exports.checkoutUserController = checkoutUserController;
+const transaction_service_1 = require("../services/transaction.service");
+async function createTransactionController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const request = req.body;
+        const response = await (0, transaction_service_1.createTransactionService)(id, request);
+        return res.status(201).send(response);
     }
-    async getEventTransactionsWaiting(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const response = await TransactionService.getPaymentStatusWaiting(id);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+    catch (error) {
+        next(error);
     }
-    async getEventTrasactionsSucces(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const response = await TransactionService.getPaymentStatusSuccess(id);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+}
+async function getEventTransactionsWaitingController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const response = await (0, transaction_service_1.getPaymentStatusWaitingService)(id);
+        return res.status(200).send(response);
     }
-    async getEventTransactionsSuccessByDate(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const response = await TransactionService.getPaymentStatusSuccessByDate(id);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+    catch (error) {
+        next(error);
     }
-    async checkoutUser(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const transactionId = req.params.transactionId;
-            const file = req.file;
-            console.log("cek file name", file);
-            const response = await TransactionService.checkoutUser(id, transactionId, file);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+}
+async function getEventTrasactionsSuccesController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const response = await (0, transaction_service_1.getPaymentStatusSuccessService)(id);
+        return res.status(200).send(response);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+async function getEventTransactionsSuccessByDateController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const response = await (0, transaction_service_1.getPaymentStatusSuccessByDateService)(id);
+        return res.status(200).send(response);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+async function checkoutUserController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const transactionId = req.params.transactionId;
+        const file = req.file;
+        console.log("cek file name", file);
+        const response = await (0, transaction_service_1.checkoutUserService)(id, transactionId, file);
+        return res.status(200).send(response);
+    }
+    catch (error) {
+        next(error);
     }
 }

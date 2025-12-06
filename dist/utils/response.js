@@ -1,4 +1,7 @@
-export const responseWithData = (status, isSuccess, message, data) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.responseDataWithPagination = exports.responseWithoutData = exports.responseWithData = void 0;
+const responseWithData = (status, isSuccess, message, data) => {
     return {
         rc: status,
         success: isSuccess,
@@ -6,14 +9,16 @@ export const responseWithData = (status, isSuccess, message, data) => {
         result: data,
     };
 };
-export const responseWithoutData = (status, isSuccess, message) => {
+exports.responseWithData = responseWithData;
+const responseWithoutData = (status, isSuccess, message) => {
     return {
         rc: status,
         success: isSuccess,
         message,
     };
 };
-export const responseDataWithPagination = (status, message, data, page, limit, total) => {
+exports.responseWithoutData = responseWithoutData;
+const responseDataWithPagination = (status, message, data, page, limit, total) => {
     return {
         rc: status,
         success: true,
@@ -24,3 +29,4 @@ export const responseDataWithPagination = (status, message, data, page, limit, t
         total
     };
 };
+exports.responseDataWithPagination = responseDataWithPagination;

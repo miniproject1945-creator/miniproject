@@ -1,104 +1,113 @@
-import { AdminService } from '@/services/admin.service';
-export class AdminController {
-    async getAdminEvents(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const query = req.query;
-            const response = await AdminService.getAdminEvents(id, query);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getAdminEventsController = getAdminEventsController;
+exports.getEventTransactionsController = getEventTransactionsController;
+exports.getTotalSalesController = getTotalSalesController;
+exports.getTransactionStatusController = getTransactionStatusController;
+exports.updateTransactionStatusController = updateTransactionStatusController;
+exports.getEventParticipationsController = getEventParticipationsController;
+exports.getTransactionController = getTransactionController;
+exports.getTransactionDetailsController = getTransactionDetailsController;
+exports.getEventController = getEventController;
+const admin_service_1 = require("../services/admin.service");
+async function getAdminEventsController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const query = req.query;
+        const response = await (0, admin_service_1.getAdminEventsService)(id, query);
+        return res.status(200).send(response);
     }
-    async getEventTransactions(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const query = req.query;
-            const response = await AdminService.getAdminEventTransactions(id, query);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+    catch (error) {
+        next(error);
     }
-    async getTotalSales(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const query = req.query;
-            const response = await AdminService.getAdminTotalSales(id, query);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+}
+async function getEventTransactionsController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const query = req.query;
+        const response = await (0, admin_service_1.getAdminEventTransactionsService)(id, query);
+        return res.status(200).send(response);
     }
-    async getTransactionStatus(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const query = req.query;
-            const response = await AdminService.getAdminTransactionStatus(id, query);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+    catch (error) {
+        next(error);
     }
-    async updateTransactionStatus(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const transactionId = req.params.transactionId;
-            const request = req.body;
-            const response = await AdminService.updateAdminTransactionStatus(id, transactionId, request);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+}
+async function getTotalSalesController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const query = req.query;
+        const response = await (0, admin_service_1.getAdminTotalSalesService)(id, query);
+        return res.status(200).send(response);
     }
-    async getEventParticipations(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const eventId = req.params.eventId;
-            const query = req.query;
-            const response = await AdminService.getAdminEventParticipations(id, eventId, query);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+    catch (error) {
+        next(error);
     }
-    async getTransaction(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const transactionId = req.params.transactionId;
-            const response = await AdminService.getTransaction(id, transactionId);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+}
+async function getTransactionStatusController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const query = req.query;
+        const response = await (0, admin_service_1.getAdminTransactionStatusService)(id, query);
+        return res.status(200).send(response);
     }
-    async getTransactionDetails(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const transactionId = req.params.transactionId;
-            const response = await AdminService.getTransactionDetails(id, transactionId);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+    catch (error) {
+        next(error);
     }
-    async getEvent(req, res, next) {
-        try {
-            const id = res.locals.decoded.id;
-            const eventId = req.params.eventId;
-            const response = await AdminService.getEvent(id, eventId);
-            return res.status(200).send(response);
-        }
-        catch (error) {
-            next(error);
-        }
+}
+async function updateTransactionStatusController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const transactionId = req.params.transactionId;
+        const request = req.body;
+        const response = await (0, admin_service_1.updateAdminTransactionStatusService)(id, transactionId, request);
+        return res.status(200).send(response);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+async function getEventParticipationsController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const eventId = req.params.eventId;
+        const query = req.query;
+        const response = await (0, admin_service_1.getAdminEventParticipationsService)(id, eventId, query);
+        return res.status(200).send(response);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+async function getTransactionController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const transactionId = req.params.transactionId;
+        const response = await (0, admin_service_1.getTransactionService)(id, transactionId);
+        return res.status(200).send(response);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+async function getTransactionDetailsController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const transactionId = req.params.transactionId;
+        const response = await (0, admin_service_1.getTransactionDetailsService)(id, transactionId);
+        return res.status(200).send(response);
+    }
+    catch (error) {
+        next(error);
+    }
+}
+async function getEventController(req, res, next) {
+    try {
+        const id = res.locals.decoded.id;
+        const eventId = req.params.eventId;
+        const response = await (0, admin_service_1.getEventService)(id, eventId);
+        return res.status(200).send(response);
+    }
+    catch (error) {
+        next(error);
     }
 }

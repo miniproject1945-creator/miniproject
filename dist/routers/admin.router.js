@@ -1,26 +1,16 @@
-import { AdminController } from '@/controllers/admin.controller';
-import { adminGuard, verifyToken } from '@/middlewares/auth.middleware';
-import { Router } from 'express';
-export class AdminRouter {
-    router;
-    adminController;
-    constructor() {
-        this.router = Router();
-        this.adminController = new AdminController();
-        this.initializeRoutes();
-    }
-    initializeRoutes() {
-        this.router.get('/events', verifyToken, adminGuard, this.adminController.getAdminEvents);
-        this.router.get('/events/transactions', verifyToken, adminGuard, this.adminController.getEventTransactions);
-        this.router.get('/events/:eventId', verifyToken, adminGuard, this.adminController.getEvent);
-        this.router.get('/events/:eventId/participations', verifyToken, adminGuard, this.adminController.getEventParticipations);
-        this.router.get('/total-sales', verifyToken, adminGuard, this.adminController.getTotalSales);
-        this.router.get('/transaction-status', verifyToken, adminGuard, this.adminController.getTransactionStatus);
-        this.router.get('/transactions/:transactionId', verifyToken, adminGuard, this.adminController.getTransaction);
-        this.router.get('/transactions/:transactionId/details', verifyToken, adminGuard, this.adminController.getTransactionDetails);
-        this.router.patch('/transactions/:transactionId/status', verifyToken, adminGuard, this.adminController.updateTransactionStatus);
-    }
-    getRoutes() {
-        return this.router;
-    }
-}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const admin_controller_1 = require("../controllers/admin.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const express_1 = require("express");
+const AdminRouter = (0, express_1.Router)();
+AdminRouter.get("/events", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getAdminEventsController);
+AdminRouter.get("/events/transactios", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getEventTransactionsController);
+AdminRouter.get("/events/:eventId", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getEventController);
+AdminRouter.get("events/:eventId/participations", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getEventParticipationsController);
+AdminRouter.get("/total-sales", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getTotalSalesController);
+AdminRouter.get("/transaction-status", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getTransactionStatusController);
+AdminRouter.get("/transaction/:transactionId", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getTransactionController);
+AdminRouter.get("/transaction/:transactionId/details", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getTransactionDetailsController);
+AdminRouter.get("transaction/:transactionId/status", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, admin_controller_1.getTransactionStatusController);
+exports.default = AdminRouter;

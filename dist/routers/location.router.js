@@ -1,17 +1,7 @@
-import { LocationController } from "@/controllers/location.controller";
-import { Router } from "express";
-export class locationRouter {
-    router;
-    locationController;
-    constructor() {
-        this.router = Router();
-        this.locationController = new LocationController();
-        this.initializeRoutes();
-    }
-    initializeRoutes() {
-        this.router.get("/", this.locationController.getLocations);
-    }
-    getRouter() {
-        return this.router;
-    }
-}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const location_controller_1 = require("../controllers/location.controller");
+const express_1 = require("express");
+const locationRouter = (0, express_1.Router)();
+locationRouter.get("/", location_controller_1.getLocationsController);
+exports.default = locationRouter;

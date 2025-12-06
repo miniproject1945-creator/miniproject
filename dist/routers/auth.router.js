@@ -1,20 +1,10 @@
-import { AuthController } from '@/controllers/auth.controller';
-import { verifyToken } from '@/middlewares/auth.middleware';
-import { Router } from 'express';
-export class AuthRouter {
-    router;
-    authController;
-    constructor() {
-        this.router = Router();
-        this.authController = new AuthController();
-        this.initializeRoutes();
-    }
-    initializeRoutes() {
-        this.router.post('/register', this.authController.register);
-        this.router.post('/login', this.authController.login);
-        this.router.get('/keep-login', verifyToken, this.authController.keepLogin);
-    }
-    getRoutes() {
-        return this.router;
-    }
-}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const auth_controller_1 = require("../controllers/auth.controller");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const express_1 = require("express");
+const authRouter = (0, express_1.Router)();
+authRouter.post("/register", auth_controller_1.registerController);
+authRouter.post("/login", auth_controller_1.loginController);
+authRouter.post("/keep-login", auth_middleware_1.verifyToken, auth_controller_1.keepLoginController);
+exports.default = authRouter;

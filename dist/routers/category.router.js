@@ -1,17 +1,7 @@
-import { CategoryController } from "@/controllers/category.controller";
-import { Router } from "express";
-export class CategoryRouter {
-    router;
-    categoryController;
-    constructor() {
-        this.router = Router();
-        this.categoryController = new CategoryController();
-        this.initializeRoutes();
-    }
-    initializeRoutes() {
-        this.router.get('/', this.categoryController.getCategories);
-    }
-    getRoutes() {
-        return this.router;
-    }
-}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const category_controller_1 = require("../controllers/category.controller");
+const express_1 = require("express");
+const CategoryRouter = (0, express_1.Router)();
+CategoryRouter.get("/", category_controller_1.getCategoriesController);
+exports.default = CategoryRouter;

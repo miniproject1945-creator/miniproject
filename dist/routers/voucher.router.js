@@ -1,20 +1,10 @@
-import { VoucherController } from "@/controllers/voucher.controller";
-import { Router } from "express";
-import { adminGuard, verifyToken } from "@/middlewares/auth.middleware";
-export class voucherRouter {
-    router;
-    voucherController;
-    constructor() {
-        this.router = Router();
-        this.voucherController = new VoucherController();
-        this.initializeRoutes();
-    }
-    initializeRoutes() {
-        this.router.post("/", verifyToken, adminGuard, this.voucherController.createVoucher);
-        this.router.get("/:eventId", verifyToken, this.voucherController.getVoucherById);
-        this.router.get("/:voucher-creator/:eventId", this.voucherController.getVouchersByCreator);
-    }
-    getRouter() {
-        return this.router;
-    }
-}
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const voucher_controller_1 = require("../controllers/voucher.controller");
+const express_1 = require("express");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const voucherRouter = (0, express_1.Router)();
+voucherRouter.post("/", auth_middleware_1.verifyToken, auth_middleware_1.adminGuard, voucher_controller_1.createVoucherController);
+voucherRouter.get("/:eventId", auth_middleware_1.verifyToken, voucher_controller_1.getVoucherByIdController);
+voucherRouter.get("/:voucher-creator/:eventId", voucher_controller_1.getVouchersByCreatorController);
+exports.default = voucherRouter;
