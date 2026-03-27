@@ -1,76 +1,37 @@
-import { Request, Response, NextFunction } from "express";
-
-import {
-  verificationLinkService,
-  verifyService,
-  Login,
-} from "../services/auth.service";
-import { Token } from "../middlewares/auth.middleware";
-
-export async function verificationLinkController(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const { email } = req.body;
-    await verificationLinkService(email);
-
-    res.json({
-      message: "A verification link has been sent to your email",
-    });
-  } catch (err) {
-    next(err);
-  }
-}
-
-export async function verifyController(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const authHeader = req.headers.authorization as string;
-    const token = authHeader.split(" ")[1];
-
-    const { email } = req.user as Token;
-    const { firstname, lastname, password, referral } = req.body;
-
-    await verifyService(
-      referral,
-      token,
-      {
-        email,
-        firstname,
-        lastname,
-        password,
-        referral,
-      }
-    );
-
-    res.json({
-      message: "Your account has been verified",
-    });
-  } catch (err) {
-    next(err);
-  }
-}
+import { registerService, loginService, keepLoginService } from '../services/auth.service';
+import { Decoded, LoginRequest, RegisterRequest } from '../types/auth.type';
+import { NextFunction, Request, Response } from 'express';
 
 
-export async function loginController(
-    req: Request, 
-    res: Response, 
-    next: NextFunction){
+  export async function registerController(req: Request, res: Response, next: NextFunction) {
     try {
-        const {email, password} = req.body;
-        const data = await Login(email, password);
+      const request = req.body as RegisterRequest;
+      const response = await registerService(request);
 
-        res.json({
-            message: "OK",
-            data,
-        })
-    } catch (err) {
-        next(err)
-        
+      return res.status(201).send(response);
+    } catch (error) {
+      next(error);
     }
-}
+  }
+
+  export async function loginController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const request = req.body as LoginRequest;
+      const response = await loginService(request);
+
+      return res.status(200).send(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  export async function keepLoginController(req: Request, res: Response, next: NextFunction) {
+    try {
+      const decoded = res.locals.decoded as Decoded;
+      const response = await keepLoginService(decoded);
+
+      return res.status(200).send(response);
+    } catch (error) {
+      next(error);
+    }
+  }

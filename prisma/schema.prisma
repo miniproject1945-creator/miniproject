@@ -8,53 +8,149 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+        
+        
 
-model Wallet {
-  id      String @id @default(uuid())
-  balance Int    @default(0)
-  userId  String @unique
+        
 
-  user User @relation(fields: [userId], references: [id])
+model Location {
+  id     Int     @id @default(autoincrement())
+  name   String
+  events Event[]
+
+  @@map("locations")
+}
+
+model Category {
+  id     Int     @id @default(autoincrement())
+  name   String
+  events Event[]
+
+  @@map("categories")
 }
 
 model User {
-  id         String    @id @default(uuid())
-  firstname  String
-  lastname   String
-  email      String    @unique
-  password   String
-  wallet     Wallet?
-  referral   Referral? 
-
-  
-  referredById  String?
-  referredBy     User?      @relation("UserReferrals", fields: [referredById], references: [id])
-
-  
-  referralsMade  User[]     @relation("UserReferrals")
+  id           Int           @id @default(autoincrement())
+  username     String        @unique
+  email        String        @unique
+  password     String
+  referralCode String?       @unique
+  isAdmin      Boolean
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  point        Point?
+  events       Event[]
+  feedbacks    Feedback[]
+  vouchers     Voucher[]
+  transactions Transaction[]
 
   @@map("users")
 }
 
-model Referral {
-  id            String   @id @default(uuid())
-  referralCode  String   @unique
-  createdAt     DateTime @default(now())
-  userId        String   @unique
-  user          User     @relation(fields: [userId], references: [id])
+model Point {
+  id         Int      @id @default(autoincrement())
+  balance    Int
+  expiryDate DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  userId     Int      @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("points")
 }
 
-model RegisToken {
-  id    Int    @id @default(autoincrement())
-  token String @unique
+model Event {
+  id             Int           @id @default(autoincrement())
+  name           String
+  price          Int
+  description    String        @db.Text
+  imageURL       String
+  availableSeats Int
+  maxCapacity    Int
+  limitCheckout  Int
+  startDate      DateTime
+  endDate        DateTime
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  userId         Int
+  locationId     Int
+  categoryId     Int
+  feedbacks      Feedback[]
+  vouchers       Voucher[]
+  transactions   Transaction[]
+  location       Location      @relation(fields: [locationId], references: [id])
+  category       Category      @relation(fields: [categoryId], references: [id])
+  user           User          @relation(fields: [userId], references: [id])
+
+  @@map("events")
 }
 
-enum Role {
-  USER
-  ADMIN
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  message   String?  @db.Text
+  rating    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  eventId   Int
+  event     Event    @relation(fields: [eventId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("feedbacks")
 }
 
+model Voucher {
+  id           Int           @id @default(autoincrement())
+  name         String
+  discount     Int
+  expiryDate   DateTime?
+  maxUsage     Int
+  usage        Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  eventId      Int?
+  userId       Int?
+  transactions Transaction[]
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event        Event?        @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
+  @@map("vouchers")
+}
 
+model Transaction {
+  id               Int                 @id @default(autoincrement())
+  amount           Int
+  quantity         Int
+  originalAmount   Int
+  discountedAmount Int?
+  redeemedPoints   Int?
+  userId           Int
+  eventId          Int
+  voucherId        Int?
+  paymentStatus    PaymentStatus
+  paymentProof     String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  user             User                @relation(fields: [userId], references: [id])
+  event            Event               @relation(fields: [eventId], references: [id])
+  voucher          Voucher?            @relation(fields: [voucherId], references: [id])
+  details          TransactionDetail[]
 
+  @@map("transactions")
+}
 
+enum PaymentStatus {
+  waiting
+  paid
+  success
+  failed
+}
+
+model TransactionDetail {
+  id            Int         @id @default(autoincrement())
+  ticketCode    String
+  transactionId Int
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+
+  @@map("transaction_details")
+}

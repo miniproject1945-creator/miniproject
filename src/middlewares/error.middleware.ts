@@ -1,17 +1,41 @@
-import { Request, Response, NextFunction } from "express";
-import { CustomError } from "@/utils/customError";
+// middleware/ErrorMiddleware.ts
+import { NextFunction, Request, Response } from "express";
+import { ZodError } from "zod";
+import jwt from "jsonwebtoken";
+import { isCustomError } from "../utils/error";
+import { responseWithoutData } from "../utils/response";
 
-export default function errorMiddleware(
-  err: CustomError | Error,
+export const ErrorMiddleware = (
+  error: Error, 
   req: Request,
   res: Response,
   next: NextFunction
-) {
-  const status = "statusCode" in err ? err.statusCode : 500;
-  const message = err.message || "Internal Server Error";
+) => {
+  // Error dari validasi Zod
+  if (error instanceof ZodError) {
+    let errorsMsg = "";
+    error.errors.forEach((err) => {
+      errorsMsg += `[x] ${err.message}\n`;
+    });
 
-  res.status(status).json({
-    message: "NG",
-    error: message,
-  });
-}
+    return res
+      .status(400)
+      .send(responseWithoutData(400, false, errorsMsg.trim()));
+  }
+
+  if (isCustomError(error)) {
+    return res
+      .status(error.status)
+      .send(responseWithoutData(error.status, false, error.message));
+  }
+
+  if (error instanceof jwt.JsonWebTokenError) {
+    return res
+      .status(401)
+      .send(responseWithoutData(401, false, "Invalid or expired token"));
+  }
+
+  return res
+    .status(500)
+    .send(responseWithoutData(500, false, error.message || "Internal Server Error"));
+};
